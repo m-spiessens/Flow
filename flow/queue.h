@@ -25,8 +25,6 @@ SOLUTION.
 #ifndef FLOW_QUEUE_H_
 #define FLOW_QUEUE_H_
 
-#include <stdint.h>
-
 namespace Flow
 {
 
@@ -35,9 +33,9 @@ class Queue
 {
 private:
 	DataType* _data;
-	uint16_t _size;
-	uint16_t _first;
-	uint16_t _last;
+	const uint16_t _size;
+	volatile uint16_t _first;
+	volatile uint16_t _last;
 	volatile uint16_t _enqueued;
 	volatile uint16_t _dequeued;
 
@@ -64,7 +62,7 @@ public:
 
 	bool isFull() const
 	{
-		return (_enqueued == _dequeued + _size);
+		return (_enqueued == static_cast<uint16_t>(_dequeued + _size));
 	}
 
 	bool enqueue(const DataType& element)
@@ -78,6 +76,7 @@ public:
 			_last = (_last == _size - 1) ? 0 : _last + 1;
 
 			_enqueued++;
+
 			success = true;
 		}
 
@@ -95,6 +94,7 @@ public:
 			_first = (_first == _size - 1) ? 0 : _first + 1;
 
 			_dequeued++;
+
 			success = true;
 		}
 
