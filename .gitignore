@@ -8,3 +8,4 @@ library
 Debug
 Release
 .settings
+.externalToolBuilders
