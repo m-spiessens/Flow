@@ -58,99 +58,99 @@ TEST_GROUP(Queue_TestBench)
 	}
 };
 
-//TEST(Queue_TestBench, IsEmptyAfterCreation)
-//{
-//	for(unsigned int i = 0; i < UNITS; i++)
-//	{
-//		CHECK(unitUnderTest[i]->isEmpty());
-//		Data response;
-//		CHECK(!unitUnderTest[i]->dequeue(response));
-//	}
-//}
-//
-//TEST(Queue_TestBench, EnqueueDequeueItem)
-//{
-//	for(unsigned int i = 0; i < UNITS; i++)
-//	{
-//		CHECK(unitUnderTest[i]->isEmpty());
-//		Data stimulus = Data(123, true);
-//		CHECK(unitUnderTest[i]->enqueue(stimulus));
-//		CHECK(!unitUnderTest[i]->isEmpty());
-//		Data response;
-//		CHECK(unitUnderTest[i]->dequeue(response));
-//		CHECK(stimulus == response);
-//		CHECK(unitUnderTest[i]->isEmpty());
-//		CHECK(!unitUnderTest[i]->dequeue(response));
-//	}
-//}
-//
-//TEST(Queue_TestBench, FullQueue)
-//{
-//	for(unsigned int i = 0; i < UNITS; i++)
-//	{
-//		// Queue should be empty.
-//		CHECK(unitUnderTest[i]->isEmpty());
-//
-//		for(unsigned int c = 0; c < (QUEUE_SIZE[i] - 1); c++)
-//		{
-//			Data stimulus = Data(c, true);
-//			// Queue should accept another item.
-//			CHECK(unitUnderTest[i]->enqueue(stimulus));
-//
-//			// Queue should not be empty.
-//			CHECK(!unitUnderTest[i]->isEmpty());
-//
-//			// Queue shouldn't be full.
-//			CHECK(!unitUnderTest[i]->isFull());
-//		}
-//
-//		Data lastStimulus = Data(QUEUE_SIZE[i], false);
-//		// Queue should accept another item.
-//		CHECK(unitUnderTest[i]->enqueue(lastStimulus));
-//
-//		// Queue should not be empty.
-//		CHECK(!unitUnderTest[i]->isEmpty());
-//
-//		// Queue should be full.
-//		CHECK(unitUnderTest[i]->isFull());
-//
-//		// Queue shouldn't accept any more items.
-//		CHECK(!unitUnderTest[i]->enqueue(lastStimulus));
-//
-//		Data response;
-//
-//		for(unsigned int c = 0; c < (QUEUE_SIZE[i] - 1); c++)
-//		{
-//			// Should get another item from the Queue.
-//			CHECK(unitUnderTest[i]->dequeue(response));
-//
-//			// Item should be the expected.
-//			Data expectedResponse = Data(c, true);
-//			CHECK(response == expectedResponse);
-//
-//			// Queue should not be empty.
-//			CHECK(!unitUnderTest[i]->isEmpty());
-//
-//			// Queue shouldn't be full.
-//			CHECK(!unitUnderTest[i]->isFull());
-//		}
-//
-//		// Should get another item from the Queue.
-//		CHECK(unitUnderTest[i]->dequeue(response));
-//
-//		// Item should be the expected.
-//		CHECK(lastStimulus == response);
-//
-//		// Queue shouldn't be full.
-//		CHECK(!unitUnderTest[i]->isFull());
-//
-//		// Queue should be empty.
-//		CHECK(unitUnderTest[i]->isEmpty());
-//
-//		// Shouldn't get another item from the Queue.
-//		CHECK(!unitUnderTest[i]->dequeue(response));
-//	}
-//}
+TEST(Queue_TestBench, IsEmptyAfterCreation)
+{
+	for(unsigned int i = 0; i < UNITS; i++)
+	{
+		CHECK(unitUnderTest[i]->isEmpty());
+		Data response;
+		CHECK(!unitUnderTest[i]->dequeue(response));
+	}
+}
+
+TEST(Queue_TestBench, EnqueueDequeueItem)
+{
+	for(unsigned int i = 0; i < UNITS; i++)
+	{
+		CHECK(unitUnderTest[i]->isEmpty());
+		Data stimulus = Data(123, true);
+		CHECK(unitUnderTest[i]->enqueue(stimulus));
+		CHECK(!unitUnderTest[i]->isEmpty());
+		Data response;
+		CHECK(unitUnderTest[i]->dequeue(response));
+		CHECK(stimulus == response);
+		CHECK(unitUnderTest[i]->isEmpty());
+		CHECK(!unitUnderTest[i]->dequeue(response));
+	}
+}
+
+TEST(Queue_TestBench, FullQueue)
+{
+	for(unsigned int i = 0; i < UNITS; i++)
+	{
+		// Queue should be empty.
+		CHECK(unitUnderTest[i]->isEmpty());
+
+		for(unsigned int c = 0; c < (QUEUE_SIZE[i] - 1); c++)
+		{
+			Data stimulus = Data(c, true);
+			// Queue should accept another item.
+			CHECK(unitUnderTest[i]->enqueue(stimulus));
+
+			// Queue should not be empty.
+			CHECK(!unitUnderTest[i]->isEmpty());
+
+			// Queue shouldn't be full.
+			CHECK(!unitUnderTest[i]->isFull());
+		}
+
+		Data lastStimulus = Data(QUEUE_SIZE[i], false);
+		// Queue should accept another item.
+		CHECK(unitUnderTest[i]->enqueue(lastStimulus));
+
+		// Queue should not be empty.
+		CHECK(!unitUnderTest[i]->isEmpty());
+
+		// Queue should be full.
+		CHECK(unitUnderTest[i]->isFull());
+
+		// Queue shouldn't accept any more items.
+		CHECK(!unitUnderTest[i]->enqueue(lastStimulus));
+
+		Data response;
+
+		for(unsigned int c = 0; c < (QUEUE_SIZE[i] - 1); c++)
+		{
+			// Should get another item from the Queue.
+			CHECK(unitUnderTest[i]->dequeue(response));
+
+			// Item should be the expected.
+			Data expectedResponse = Data(c, true);
+			CHECK(response == expectedResponse);
+
+			// Queue should not be empty.
+			CHECK(!unitUnderTest[i]->isEmpty());
+
+			// Queue shouldn't be full.
+			CHECK(!unitUnderTest[i]->isFull());
+		}
+
+		// Should get another item from the Queue.
+		CHECK(unitUnderTest[i]->dequeue(response));
+
+		// Item should be the expected.
+		CHECK(lastStimulus == response);
+
+		// Queue shouldn't be full.
+		CHECK(!unitUnderTest[i]->isFull());
+
+		// Queue should be empty.
+		CHECK(unitUnderTest[i]->isEmpty());
+
+		// Shouldn't get another item from the Queue.
+		CHECK(!unitUnderTest[i]->dequeue(response));
+	}
+}
 
 static void producer(Queue<Data>* queue, const unsigned long long count)
 {
