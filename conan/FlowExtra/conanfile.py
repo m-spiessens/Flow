@@ -18,8 +18,8 @@ class FlowExtra(ConanFile):
 		self.output.info("Nothing to build, this package provides sources.")
 
 	def package(self):
-		self.copy("utility.h", "include/flow", "Flow/flow/include")
-		self.copy("components.h", "include/flow", "Flow/flow/include")
-		self.copy("components.cpp", "source/flow", "Flow/flow/source")
-		self.copy("debug.h", "include/flow", "Flow/flow/include")
-		self.copy("debug.cpp", "source/flow", "Flow/flow/source")
+		self.copy("utility.h", "include/flow", "Flow/include/flow")
+		self.copy("components.h", "include/flow", "Flow/include/flow")
+		self.copy("components.cpp", "source/flow", "Flow/source/flow")
+		self.copy("debug.h", "include/flow", "Flow/include/flow")
+		self.copy("debug.cpp", "source/flow", "Flow/source/flow")

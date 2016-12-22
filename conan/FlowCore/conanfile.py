@@ -18,5 +18,5 @@ class FlowCore(ConanFile):
 		self.output.info("Nothing to build, this package provides sources.")
 
 	def package(self):
-		self.copy("queue.h", "include/flow", "Flow/flow/include")
-		self.copy("flow.h", "include/flow", "Flow/flow/include")
+		self.copy("queue.h", "include/flow", "Flow/include/flow")
+		self.copy("flow.h", "include/flow", "Flow/include/flow")

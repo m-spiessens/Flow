@@ -18,6 +18,6 @@ class FlowTestProject(ConanFile):
 		self.output.info("Nothing to build, this package provides a project.")
 
 	def package(self):
-		self.copy(".project", "", "Flow/flow_test_project")
-		self.copy(".cproject", "", "Flow/flow_test_project")
-		self.copy("main.cpp", "source", "Flow/flow_test_project/source")
+		self.copy(".project", "", "Flow")
+		self.copy(".cproject", "", "Flow")
+		self.copy("main.cpp", "source", "Flow/source")

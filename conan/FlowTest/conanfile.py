@@ -18,5 +18,5 @@ class FlowTest(ConanFile):
 		self.output.info("Nothing to build, this package provides sources.")
 
 	def package(self):
-		self.copy("*.h", "include/flow_test", "Flow/flow_test/include")
-		self.copy("*.cpp", "source/flow_test", "Flow/flow_test/source")
+		self.copy("*.h", "include/flow_test", "Flow/include/flow_test")
+		self.copy("*.cpp", "source/flow_test", "Flow/source/flow_test")
