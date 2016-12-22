@@ -8,7 +8,7 @@ class FlowExtra(ConanFile):
 	license = "MIT"
 	author = "Mathias Spiessens"
 	exports = "*"
-	build_policy = "always"
+	build_policy = "missing"
 	requires = "FlowCore/bleed@cynara/testing"
 	
 	def source(self):

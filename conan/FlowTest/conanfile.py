@@ -1,15 +1,15 @@
 from conans import ConanFile
 
-class FlowCore(ConanFile):
-	name = "FlowCore"
+class FlowTest(ConanFile):
+	name = "FlowTest"
 	version = "bleed"
-	description = """Flow is a pipes and filters implementation tailored for microcontrollers. 
-		It provides 3 base concepts: component, port and connection."""
+	description = """Contains the unit tests for Flow."""
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
 	exports = "*"
 	build_policy = "missing"
+	requires = "FlowExtra/bleed@cynara/testing", "CppUTest/3.8@cynara/testing"
 	
 	def source(self):
 		self.run("git clone https://github.com/CynaraKrewe/Flow.git")
@@ -18,5 +18,5 @@ class FlowCore(ConanFile):
 		self.output.info("Nothing to build, this package provides sources.")
 
 	def package(self):
-		self.copy("queue.h", "include/flow", "Flow/flow/include")
-		self.copy("flow.h", "include/flow", "Flow/flow/include")
+		self.copy("*.h", "include/flow_test", "Flow/flow_test/include")
+		self.copy("*.cpp", "source/flow_test", "Flow/flow_test/source")
