@@ -25,6 +25,8 @@ SOLUTION.
 #ifndef FLOW_QUEUE_H_
 #define FLOW_QUEUE_H_
 
+#include <stdint.h>
+
 namespace Flow
 {
 

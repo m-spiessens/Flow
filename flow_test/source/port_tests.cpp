@@ -29,7 +29,7 @@ SOLUTION.
 
 #include "flow/flow.h"
 
-#include "data.h"
+#include "flow_test/data.h"
 
 using Flow::Connection;
 using Flow::OutPort;

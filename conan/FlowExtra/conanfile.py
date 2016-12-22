@@ -8,7 +8,7 @@ class FlowExtra(ConanFile):
 	license = "MIT"
 	author = "Mathias Spiessens"
 	exports = "*"
-	build_policy = "missing"
+	build_policy = "always"
 	requires = "FlowCore/bleed@cynara/testing"
 	
 	def source(self):
@@ -18,8 +18,8 @@ class FlowExtra(ConanFile):
 		self.output.info("Nothing to build, this package provides sources.")
 
 	def package(self):
-		self.copy("utility.h", "flow/include", "Flow/flow/include")
-		self.copy("components.h", "flow/include", "Flow/flow/include")
-		self.copy("components.cpp", "flow/source", "Flow/flow/source")
-		self.copy("debug.h", "flow/include", "Flow/flow/include")
-		self.copy("debug.cpp", "flow/source", "Flow/flow/source")
+		self.copy("utility.h", "include/flow", "Flow/flow/include")
+		self.copy("components.h", "include/flow", "Flow/flow/include")
+		self.copy("components.cpp", "source/flow", "Flow/flow/source")
+		self.copy("debug.h", "include/flow", "Flow/flow/include")
+		self.copy("debug.cpp", "source/flow", "Flow/flow/source")

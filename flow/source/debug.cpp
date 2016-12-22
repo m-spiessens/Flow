@@ -26,7 +26,7 @@ SOLUTION.
 #include <stdio.h>
 #include <string.h>
 
-#include "debug.h"
+#include "flow/debug.h"
 
 Flow::OutPort<char> Debug::outPort;
 
