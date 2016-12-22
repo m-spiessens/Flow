@@ -1,25 +1,25 @@
 /*
-The MIT License (MIT)
+ The MIT License (MIT)
 
-Copyright (c) 2016 Cynara Krewe
+ Copyright (c) 2016 Cynara Krewe
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software, hardware and associated documentation files (the "Solution"), to deal
-in the Solution without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Solution, and to permit persons to whom the Solution is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software, hardware and associated documentation files (the "Solution"), to deal
+ in the Solution without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Solution, and to permit persons to whom the Solution is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Solution.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Solution.
 
-THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
-SOLUTION.
+ THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
+ SOLUTION.
  */
 
 #include <stdint.h>
@@ -47,17 +47,19 @@ TEST_GROUP(Component_Combine_TestBench)
 	{
 		unitUnderTest = new Combine<char, COMBINE_COUNT>();
 
-		for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+		for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 		{
-			outStimulusConnection[i] = connect(outStimulus[i], unitUnderTest->in[i]);
+			outStimulusConnection[i] = connect(outStimulus[i],
+					unitUnderTest->in[i]);
 		}
 
-		inResponseConnection = connect(unitUnderTest->out, inResponse, COMBINE_COUNT * 2);
+		inResponseConnection = connect(unitUnderTest->out, inResponse,
+				COMBINE_COUNT * 2);
 	}
 
 	void teardown()
 	{
-		for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+		for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 		{
 			delete outStimulusConnection[i];
 		}
@@ -79,7 +81,7 @@ TEST(Component_Combine_TestBench, DormantWithoutStimulus)
 
 TEST(Component_Combine_TestBench, CompleteCombine)
 {
-	for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+	for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 	{
 		CHECK(outStimulus[i].send(i));
 	}
@@ -89,7 +91,7 @@ TEST(Component_Combine_TestBench, CompleteCombine)
 	unitUnderTest->run();
 
 	char response;
-	for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+	for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 	{
 		CHECK(inResponse.receive(response));
 
@@ -101,14 +103,14 @@ TEST(Component_Combine_TestBench, CompleteCombine)
 
 	CHECK(!inResponse.receive(response));
 
-	for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+	for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 	{
 		CHECK(outStimulus[i].send(COMBINE_COUNT - i));
 	}
 
 	unitUnderTest->run();
 
-	for(unsigned int i = 0; i < COMBINE_COUNT; i++)
+	for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 	{
 		CHECK(inResponse.receive(response));
 

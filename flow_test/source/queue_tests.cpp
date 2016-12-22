@@ -1,25 +1,25 @@
 /*
-The MIT License (MIT)
+ The MIT License (MIT)
 
-Copyright (c) 2016 Cynara Krewe
+ Copyright (c) 2016 Cynara Krewe
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software, hardware and associated documentation files (the "Solution"), to deal
-in the Solution without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Solution, and to permit persons to whom the Solution is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software, hardware and associated documentation files (the "Solution"), to deal
+ in the Solution without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Solution, and to permit persons to whom the Solution is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Solution.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Solution.
 
-THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
-SOLUTION.
+ THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
+ SOLUTION.
  */
 
 #include <stdint.h>
@@ -34,7 +34,8 @@ SOLUTION.
 using Flow::Queue;
 
 const static unsigned int UNITS = 3;
-const static unsigned int QUEUE_SIZE[UNITS] = {1, 10, 255};
+const static unsigned int QUEUE_SIZE[UNITS] =
+{ 1, 10, 255 };
 
 TEST_GROUP(Queue_TestBench)
 {
@@ -42,7 +43,7 @@ TEST_GROUP(Queue_TestBench)
 
 	void setup()
 	{
-		for(unsigned int i = 0; i < UNITS; i++)
+		for (unsigned int i = 0; i < UNITS; i++)
 		{
 			unitUnderTest[i] = new Queue<Data>(QUEUE_SIZE[i]);
 		}
@@ -50,7 +51,7 @@ TEST_GROUP(Queue_TestBench)
 
 	void teardown()
 	{
-		for(unsigned int i = 0; i < UNITS; i++)
+		for (unsigned int i = 0; i < UNITS; i++)
 		{
 			delete unitUnderTest[i];
 		}
@@ -154,22 +155,23 @@ TEST_GROUP(Queue_TestBench)
 static void producer(Queue<Data>* queue, const unsigned long long count)
 {
 	unsigned long long c = 0;
-	while(c < count)
+	while (c < count)
 	{
-		if(queue->enqueue(Data(c, ((c % 2) == 0))))
+		if (queue->enqueue(Data(c, ((c % 2) == 0))))
 		{
 			c++;
 		}
 	}
 }
 
-static void consumer(Queue<Data>* queue, const unsigned long long count, bool* success)
+static void consumer(Queue<Data>* queue, const unsigned long long count,
+		bool* success)
 {
 	unsigned long long c = 0;
-	while(c < count)
+	while (c < count)
 	{
 		Data response;
-		if(queue->dequeue(response))
+		if (queue->dequeue(response))
 		{
 			Data expectedResponse = Data(c, ((c % 2) == 0));
 			*success = *success && (response == expectedResponse);
@@ -180,7 +182,7 @@ static void consumer(Queue<Data>* queue, const unsigned long long count, bool* s
 
 TEST(Queue_TestBench, Threadsafe)
 {
-	for(unsigned int i = 0; i < UNITS; i++)
+	for (unsigned int i = 0; i < UNITS; i++)
 	{
 		CHECK(unitUnderTest[i]->isEmpty());
 
@@ -188,7 +190,8 @@ TEST(Queue_TestBench, Threadsafe)
 		bool success = true;
 
 		std::thread producerThread(producer, unitUnderTest[i], numberOfItems);
-		std::thread consumerThread(consumer, unitUnderTest[i], numberOfItems, &success);
+		std::thread consumerThread(consumer, unitUnderTest[i], numberOfItems,
+				&success);
 
 		producerThread.join();
 		consumerThread.join();

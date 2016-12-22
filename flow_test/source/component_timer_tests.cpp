@@ -1,25 +1,25 @@
 /*
-The MIT License (MIT)
+ The MIT License (MIT)
 
-Copyright (c) 2016 Cynara Krewe
+ Copyright (c) 2016 Cynara Krewe
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software, hardware and associated documentation files (the "Solution"), to deal
-in the Solution without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Solution, and to permit persons to whom the Solution is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software, hardware and associated documentation files (the "Solution"), to deal
+ in the Solution without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Solution, and to permit persons to whom the Solution is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Solution.
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Solution.
 
-THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
-SOLUTION.
+ THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
+ SOLUTION.
  */
 
 #include <stdint.h>
@@ -75,7 +75,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 
 	CHECK(outStimulus.send(period));
 
-	for(unsigned int i = 0; i < period - 1; i++)
+	for (unsigned int i = 0; i < period - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -88,7 +88,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < period - 1; i++)
+	for (unsigned int i = 0; i < period - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -100,7 +100,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < period - 1; i++)
+	for (unsigned int i = 0; i < period - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -121,7 +121,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 
 	CHECK(outStimulus.send(firstPeriod));
 
-	for(unsigned int i = 0; i < firstPeriod - 1; i++)
+	for (unsigned int i = 0; i < firstPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -138,7 +138,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 
 	CHECK(outStimulus.send(secondPeriod));
 
-	for(unsigned int i = 0; i < firstPeriod - 1; i++)
+	for (unsigned int i = 0; i < firstPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -150,7 +150,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < secondPeriod - 1; i++)
+	for (unsigned int i = 0; i < secondPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -162,7 +162,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < secondPeriod - 1; i++)
+	for (unsigned int i = 0; i < secondPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -178,7 +178,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 
 	CHECK(outStimulus.send(thirdPeriod));
 
-	for(unsigned int i = 0; i < secondPeriod - 1; i++)
+	for (unsigned int i = 0; i < secondPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -190,7 +190,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < thirdPeriod - 1; i++)
+	for (unsigned int i = 0; i < thirdPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -202,7 +202,7 @@ TEST(Component_Timer_TestBench, TickPeriodChange)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for(unsigned int i = 0; i < thirdPeriod - 1; i++)
+	for (unsigned int i = 0; i < thirdPeriod - 1; i++)
 	{
 		unitUnderTest->run();
 	}
