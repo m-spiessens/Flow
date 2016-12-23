@@ -12,7 +12,7 @@ class FlowCore(ConanFile):
 	build_policy = "missing"
 	
 	def source(self):
-		download("https://github.com/CynaraKrewe/Flow/releases/download/v1.0/Flow-1.0.zip", "Flow-1.0.zip")
+		download("https://github.com/CynaraKrewe/Flow/archive/Flow-1.0.zip", "Flow-1.0.zip")
 		unzip("Flow-1.0.zip")
 		os.unlink("Flow-1.0.zip")
 
