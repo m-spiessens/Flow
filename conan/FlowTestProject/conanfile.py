@@ -12,7 +12,9 @@ class FlowTestProject(ConanFile):
 	requires = "FlowTest/1.0@cynara/testing"
 	
 	def source(self):
-		self.run("git clone https://github.com/CynaraKrewe/Flow.git")
+		download("https://github.com/CynaraKrewe/Flow/releases/download/v1.0/Flow-1.0.zip", "Flow-1.0.zip")
+		unzip("Flow-1.0.zip")
+		os.unlink("Flow-1.0.zip")
 
 	def build(self):
 		self.output.info("Nothing to build, this package provides a project.")
