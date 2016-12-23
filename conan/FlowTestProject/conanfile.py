@@ -1,6 +1,7 @@
 from conans import ConanFile
 from conans.tools import download, unzip
 import os
+import shutil
 
 class FlowTestProject(ConanFile):
 	name = "FlowTestProject"
@@ -16,6 +17,7 @@ class FlowTestProject(ConanFile):
 	def source(self):
 		download("https://github.com/CynaraKrewe/Flow/archive/v1.0.zip", "Flow-1.0.zip")
 		unzip("Flow-1.0.zip")
+		shutil.move("Flow-1.0", "Flow")
 		os.unlink("Flow-1.0.zip")
 
 	def build(self):
