@@ -12,7 +12,7 @@ class FlowTestProject(ConanFile):
 	requires = "FlowTest/1.0@cynara/testing"
 	
 	def source(self):
-		download("https://github.com/CynaraKrewe/Flow/archive/Flow-1.0.zip", "Flow-1.0.zip")
+		download("https://github.com/CynaraKrewe/Flow/archive/v1.0.zip", "Flow-1.0.zip")
 		unzip("Flow-1.0.zip")
 		os.unlink("Flow-1.0.zip")
 
