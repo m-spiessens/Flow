@@ -2,14 +2,14 @@ from conans import ConanFile
 
 class FlowTest(ConanFile):
 	name = "FlowTest"
-	version = "bleed"
+	version = "1.0"
 	description = """Contains the unit tests for Flow."""
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
 	exports = "*"
 	build_policy = "missing"
-	requires = "FlowExtra/bleed@cynara/testing", "CppUTest/3.8@cynara/testing"
+	requires = "FlowExtra/1.0@cynara/testing", "CppUTest/3.8@cynara/testing"
 	
 	def source(self):
 		self.run("git clone https://github.com/CynaraKrewe/Flow.git")

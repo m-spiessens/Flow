@@ -1,7 +1,7 @@
 from conans import ConanFile
 
 class ExampleUsingFlow(ConanFile):
-   requires = "FlowTestProject/bleed@cynara/testing"
+   requires = "FlowTestProject/1.0@cynara/testing"
    
    def imports(self):
       self.copy("*.h")

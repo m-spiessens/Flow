@@ -2,7 +2,7 @@ from conans import ConanFile
 
 class FlowCore(ConanFile):
 	name = "FlowCore"
-	version = "bleed"
+	version = "1.0"
 	description = """Flow is a pipes and filters implementation tailored for microcontrollers. 
 		It provides 3 base concepts: component, port and connection."""
 	url = "https://github.com/CynaraKrewe/Flow"

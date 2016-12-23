@@ -2,14 +2,14 @@ from conans import ConanFile
 
 class FlowExtra(ConanFile):
 	name = "FlowExtra"
-	version = "bleed"
+	version = "1.0"
 	description = """Contains predefined components and utilities which could be useful when using Flow."""
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
 	exports = "*"
 	build_policy = "missing"
-	requires = "FlowCore/bleed@cynara/testing"
+	requires = "FlowCore/1.0@cynara/testing"
 	
 	def source(self):
 		self.run("git clone https://github.com/CynaraKrewe/Flow.git")
