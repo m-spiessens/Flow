@@ -1,7 +1,6 @@
 from conans import ConanFile
 from conans.tools import download, unzip
 import os
-import shutil
 
 class CppUTest(ConanFile):
 	name = "CppUTest"
