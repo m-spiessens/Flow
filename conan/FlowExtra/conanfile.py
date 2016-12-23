@@ -12,7 +12,7 @@ class FlowExtra(ConanFile):
 	author = "Mathias Spiessens"
 	exports = "*"
 	build_policy = "missing"
-	requires = "FlowCore/1.0@cynara/testing"
+	requires = "FlowCore/1.0@spiessensm/stable"
 	
 	def source(self):
 		download("https://github.com/CynaraKrewe/Flow/archive/v1.0.zip", "Flow-1.0.zip")
