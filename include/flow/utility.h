@@ -1,7 +1,7 @@
 /*
  The MIT License (MIT)
 
- Copyright (c) 2016 Cynara Krewe
+ Copyright (c) 2017 Cynara Krewe
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software, hardware and associated documentation files (the "Solution"), to deal
@@ -24,14 +24,6 @@
 
 #ifndef UTILITY_H_
 #define UTILITY_H_
-
-#include <stdint.h>
-
-#define Hz * (uint32_t)1
-#define kHz * 1000 Hz
-#define MHz * 1000 kHz
-
-typedef uint32_t Frequency;
 
 #ifndef ArraySizeOf
 #define ArraySizeOf(a) (sizeof(a) / sizeof(a[0]))
