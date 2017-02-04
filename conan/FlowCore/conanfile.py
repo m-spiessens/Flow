@@ -26,3 +26,4 @@ class FlowCore(ConanFile):
 		self.copy("queue.h", "include/flow", "Flow/include/flow")
 		self.copy("utility.h", "include/flow", "Flow/include/flow")
 		self.copy("flow.h", "include/flow", "Flow/include/flow")
+		self.copy("flow.cpp", "source/flow", "Flow/source/flow")
