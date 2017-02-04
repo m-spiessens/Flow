@@ -11,7 +11,6 @@ class FlowCore(ConanFile):
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
-	exports = "*"
 	build_policy = "missing"
 	
 	def source(self):

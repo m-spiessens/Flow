@@ -10,7 +10,6 @@ class FlowExtra(ConanFile):
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
-	exports = "*"
 	build_policy = "missing"
 	requires = "FlowCore/1.0@spiessensm/stable"
 	

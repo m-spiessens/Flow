@@ -10,7 +10,6 @@ class FlowTest(ConanFile):
 	url = "https://github.com/CynaraKrewe/Flow"
 	license = "MIT"
 	author = "Mathias Spiessens"
-	exports = "*"
 	build_policy = "missing"
 	requires = "FlowExtra/1.0@spiessensm/stable", "CppUTest/3.8@spiessensm/stable"
 	
