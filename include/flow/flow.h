@@ -248,6 +248,8 @@ Connection* connect(Type constant, InPort<Type>& receiver)
 	return new ConnectionConstant<Type>(constant, receiver);
 }
 
+void disconnect(Connection* connection);
+
 class Component
 {
 public:

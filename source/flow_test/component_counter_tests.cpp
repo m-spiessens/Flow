@@ -51,8 +51,8 @@ TEST_GROUP(Component_Counter_TestBench)
 
 	void teardown()
 	{
-		delete outStimulusConnection;
-		delete inResponseConnection;
+		disconnect(outStimulusConnection);
+		disconnect(inResponseConnection);
 
 		delete unitUnderTest;
 	}

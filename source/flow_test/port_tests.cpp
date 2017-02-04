@@ -52,7 +52,7 @@ TEST_GROUP(Port_TestBench)
 
 	void teardown()
 	{
-		delete connection;
+		disconnect(connection);
 	}
 };
 
