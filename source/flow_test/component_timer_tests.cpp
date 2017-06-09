@@ -35,23 +35,19 @@ using Flow::connect;
 
 TEST_GROUP(Component_Timer_TestBench)
 {
-	OutPort<unsigned int> outStimulus;
-	Connection* outStimulusConnection;
 	Timer* unitUnderTest;
 	Connection* inResponseConnection;
 	InPort<Tick> inResponse;
 
 	void setup()
 	{
-		unitUnderTest = new Timer();
+		unitUnderTest = new Timer(100);
 
-		outStimulusConnection = connect(outStimulus, unitUnderTest->inPeriod);
 		inResponseConnection = connect(unitUnderTest->outTick, inResponse);
 	}
 
 	void teardown()
 	{
-		disconnect(outStimulusConnection);
 		disconnect(inResponseConnection);
 
 		delete unitUnderTest;
@@ -71,11 +67,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 {
 	CHECK(!inResponse.peek());
 
-	unsigned int period = 100;
-
-	CHECK(outStimulus.send(period));
-
-	for (unsigned int i = 0; i < period - 1; i++)
+	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -88,7 +80,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for (unsigned int i = 0; i < period - 1; i++)
+	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
 		unitUnderTest->run();
 	}
@@ -100,109 +92,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
-	for (unsigned int i = 0; i < period - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-}
-
-TEST(Component_Timer_TestBench, TickPeriodChange)
-{
-	CHECK(!inResponse.peek());
-
-	unsigned int firstPeriod = 100;
-
-	CHECK(outStimulus.send(firstPeriod));
-
-	for (unsigned int i = 0; i < firstPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	Tick tick;
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	unsigned int secondPeriod = 50;
-
-	CHECK(outStimulus.send(secondPeriod));
-
-	for (unsigned int i = 0; i < firstPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	for (unsigned int i = 0; i < secondPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	for (unsigned int i = 0; i < secondPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	unsigned int thirdPeriod = 500;
-
-	CHECK(outStimulus.send(thirdPeriod));
-
-	for (unsigned int i = 0; i < secondPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	for (unsigned int i = 0; i < thirdPeriod - 1; i++)
-	{
-		unitUnderTest->run();
-	}
-
-	CHECK(!inResponse.peek());
-
-	unitUnderTest->run();
-
-	CHECK(inResponse.receive(tick));
-	CHECK(tick == TICK);
-
-	for (unsigned int i = 0; i < thirdPeriod - 1; i++)
+	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
 		unitUnderTest->run();
 	}

@@ -24,11 +24,14 @@
 
 #include "flow/components.h"
 
+Timer::Timer(unsigned int period) :
+		period(period)
+{
+}
+
 void Timer::run()
 {
 	sysTicks++;
-
-	inPeriod.receive(nextPeriod);
 
 	if (period > 0)
 	{
@@ -36,12 +39,7 @@ void Timer::run()
 		{
 			sysTicks = 0;
 			outTick.send(TICK);
-			period = nextPeriod;
 		}
-	}
-	else
-	{
-		period = nextPeriod;
 	}
 }
 

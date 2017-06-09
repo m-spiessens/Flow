@@ -196,14 +196,14 @@ typedef char Tick;
 class Timer: public Flow::Component
 {
 public:
-	Flow::InPort<unsigned int> inPeriod;
 	Flow::OutPort<Tick> outTick;
+
+	Timer(unsigned int period);
 
 	void run();
 
 private:
-	unsigned int period = 0;
-	unsigned int nextPeriod = 0;
+	const unsigned int period;
 	unsigned int sysTicks = 0;
 };
 
