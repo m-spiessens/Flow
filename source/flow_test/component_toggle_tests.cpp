@@ -69,7 +69,7 @@ TEST(Component_Toggle_TestBench, DormantWithoutStimulus)
 
 TEST(Component_Toggle_TestBench, Toggle)
 {
-	CHECK(outStimulus.send(Tick::TICK));
+	CHECK(outStimulus.send(TICK));
 
 	CHECK(!inResponse.peek());
 
@@ -86,7 +86,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	CHECK(!inResponse.peek());
 
-	CHECK(outStimulus.send(Tick::TICK));
+	CHECK(outStimulus.send(TICK));
 
 	unitUnderTest->run();
 
@@ -102,7 +102,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	CHECK(!inResponse.peek());
 
-	CHECK(outStimulus.send(Tick::TICK));
+	CHECK(outStimulus.send(TICK));
 
 	unitUnderTest->run();
 
@@ -113,7 +113,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	previousResponse = currentResponse;
 
-	CHECK(outStimulus.send(Tick::TICK));
+	CHECK(outStimulus.send(TICK));
 
 	unitUnderTest->run();
 
@@ -124,7 +124,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	previousResponse = currentResponse;
 
-	CHECK(outStimulus.send(Tick::TICK));
+	CHECK(outStimulus.send(TICK));
 
 	unitUnderTest->run();
 

@@ -45,114 +45,47 @@ public:
 };
 
 template<typename Type>
-class WithReceiver
-{
-public:
-	WithReceiver(InPort<Type>& receiver) :
-			receiver(receiver)
-	{
-		receiver.connect(this);
-	}
-
-	virtual ~WithReceiver()
-	{
-		receiver.disconnect();
-	}
-
-	virtual bool receive(Type& element) = 0;
-	virtual bool peek() = 0;
-
-private:
-	InPort<Type>& receiver;
-};
-
-template<typename Type>
-class WithSender
-{
-public:
-	WithSender(OutPort<Type>& sender) :
-			sender(sender)
-	{
-		sender.connect(this);
-	}
-
-	virtual ~WithSender()
-	{
-		sender.disconnect();
-	}
-
-	virtual bool send(const Type& element) = 0;
-	virtual bool full() = 0;
-
-private:
-	OutPort<Type>& sender;
-};
-
-template<typename Type>
-class ConnectionFIFO: public Connection,
-		public WithSender<Type>,
-		public WithReceiver<Type>,
+class ConnectionOfType: public Connection,
 		protected Queue<Type>
 {
 public:
-	ConnectionFIFO(OutPort<Type>& sender, InPort<Type>& receiver,
+	ConnectionOfType(OutPort<Type>& sender, InPort<Type>& receiver,
 			unsigned int size) :
-			WithSender<Type>(sender), WithReceiver<Type>(receiver), Queue<Type>(
-					size)
+			Queue<Type>(size), receiver(receiver), sender(sender)
 	{
+		receiver.connect(this);
+		sender.connect(this);
 	}
 
-	virtual ~ConnectionFIFO()
+	virtual ~ConnectionOfType()
 	{
+		sender.disconnect();
+		receiver.disconnect();
 	}
 
-	bool send(const Type& element) override
+	bool send(const Type& element)
 	{
 		return this->enqueue(element);
 	}
 
-	bool receive(Type& element) override
+	bool receive(Type& element)
 	{
 		return this->dequeue(element);
 	}
 
-	bool peek() override
+	bool peek()
 	{
 		return !this->isEmpty();
 	}
 
-	bool full() override
+	bool full()
 	{
 		return this->isFull();
 	}
-};
-
-template<typename Type>
-class ConnectionConstant: public WithReceiver<Type>, public Connection
-{
-public:
-	ConnectionConstant(Type constant, InPort<Type>& receiver) :
-			WithReceiver<Type>(receiver), constant(constant)
-	{
-	}
-
-	virtual ~ConnectionConstant()
-	{
-	}
-
-	bool receive(Type& element) override
-	{
-		element = constant;
-		return true;
-	}
-
-	bool peek() override
-	{
-		return true;
-	}
 
 private:
-	const Type constant;
+	InPort<Type>& receiver;
+	OutPort<Type>& sender;
 };
 
 template<typename Type>
@@ -175,9 +108,9 @@ public:
 	}
 
 private:
-	WithReceiver<Type>* connection = nullptr;
+	ConnectionOfType<Type>* connection = nullptr;
 
-	void connect(WithReceiver<Type>* connection)
+	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
 	}
@@ -192,7 +125,7 @@ private:
 		return this->connection != nullptr;
 	}
 
-	friend class WithReceiver<Type> ;
+	friend class ConnectionOfType<Type> ;
 };
 
 template<typename Type>
@@ -215,9 +148,9 @@ public:
 	}
 
 private:
-	WithSender<Type>* connection;
+	ConnectionOfType<Type>* connection;
 
-	void connect(WithSender<Type>* connection)
+	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
 	}
@@ -232,20 +165,14 @@ private:
 		return this->connection != nullptr;
 	}
 
-	friend class WithSender<Type> ;
+	friend class ConnectionOfType<Type> ;
 };
 
 template<typename Type>
 Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 		unsigned int size = 1)
 {
-	return new ConnectionFIFO<Type>(sender, receiver, size);
-}
-
-template<typename Type>
-Connection* connect(Type constant, InPort<Type>& receiver)
-{
-	return new ConnectionConstant<Type>(constant, receiver);
+	return new ConnectionOfType<Type>(sender, receiver, size);
 }
 
 void disconnect(Connection* connection);

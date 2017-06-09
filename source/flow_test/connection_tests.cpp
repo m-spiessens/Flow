@@ -31,7 +31,7 @@
 
 #include "flow_test/data.h"
 
-using Flow::ConnectionFIFO;
+using Flow::ConnectionOfType;
 using Flow::OutPort;
 using Flow::InPort;
 
@@ -39,9 +39,9 @@ const static unsigned int UNITS = 3;
 const static unsigned int CONNECTION_FIFO_SIZE[UNITS] =
 { 1, 10, 255 };
 
-TEST_GROUP(ConnectionFIFO_TestBench)
+TEST_GROUP(ConnectionOfType_TestBench)
 {
-	ConnectionFIFO<Data>* unitUnderTest[UNITS];
+	ConnectionOfType<Data>* unitUnderTest[UNITS];
 	OutPort<Data> sender[UNITS];
 	InPort<Data> receiver[UNITS];
 
@@ -49,7 +49,7 @@ TEST_GROUP(ConnectionFIFO_TestBench)
 	{
 		for (unsigned int i = 0; i < UNITS; i++)
 		{
-			unitUnderTest[i] = new Flow::ConnectionFIFO<Data>(sender[i],
+			unitUnderTest[i] = new Flow::ConnectionOfType<Data>(sender[i],
 					receiver[i], CONNECTION_FIFO_SIZE[i]);
 		}
 	}
@@ -63,7 +63,7 @@ TEST_GROUP(ConnectionFIFO_TestBench)
 	}
 };
 
-TEST(ConnectionFIFO_TestBench, IsEmptyAfterCreation)
+TEST(ConnectionOfType_TestBench, IsEmptyAfterCreation)
 {
 	for (unsigned int i = 0; i < UNITS; i++)
 	{
@@ -73,7 +73,7 @@ TEST(ConnectionFIFO_TestBench, IsEmptyAfterCreation)
 	}
 }
 
-TEST(ConnectionFIFO_TestBench, SendReceiveItem)
+TEST(ConnectionOfType_TestBench, SendReceiveItem)
 {
 	for (unsigned int i = 0; i < UNITS; i++)
 	{
@@ -89,7 +89,7 @@ TEST(ConnectionFIFO_TestBench, SendReceiveItem)
 	}
 }
 
-TEST(ConnectionFIFO_TestBench, FullConnection)
+TEST(ConnectionOfType_TestBench, FullConnection)
 {
 	for (unsigned int i = 0; i < UNITS; i++)
 	{
@@ -145,7 +145,7 @@ TEST(ConnectionFIFO_TestBench, FullConnection)
 	}
 }
 
-static void producer(ConnectionFIFO<Data>* _unitUnderTest,
+static void producer(ConnectionOfType<Data>* _unitUnderTest,
 		const unsigned long long count)
 {
 	for (unsigned long long c = 0; c <= count; c++)
@@ -155,7 +155,7 @@ static void producer(ConnectionFIFO<Data>* _unitUnderTest,
 	}
 }
 
-static void consumer(ConnectionFIFO<Data>* _unitUnderTest,
+static void consumer(ConnectionOfType<Data>* _unitUnderTest,
 		const unsigned long long count, bool* success)
 {
 	unsigned long long c = 0;
@@ -172,7 +172,7 @@ static void consumer(ConnectionFIFO<Data>* _unitUnderTest,
 	}
 }
 
-TEST(ConnectionFIFO_TestBench, Threadsafe)
+TEST(ConnectionOfType_TestBench, Threadsafe)
 {
 	for (unsigned int i = 0; i < UNITS; i++)
 	{
@@ -192,39 +192,5 @@ TEST(ConnectionFIFO_TestBench, Threadsafe)
 
 		// Connection should be empty.
 		CHECK(!unitUnderTest[i]->peek());
-	}
-}
-
-using Flow::ConnectionConstant;
-
-TEST_GROUP(ConnectionConstant_TestBench)
-{
-	ConnectionConstant<Data>* unitUnderTest;
-	InPort<Data> receiver;
-
-	void setup()
-	{
-		unitUnderTest = new Flow::ConnectionConstant<Data>(Data
-		{ 123, true }, receiver);
-	}
-
-	void teardown()
-	{
-		delete unitUnderTest;
-	}
-};
-
-TEST(ConnectionConstant_TestBench, Constant)
-{
-	for (volatile unsigned int i = 0; i < 1000; i++)
-	{
-		// Should always have a value.
-		CHECK(unitUnderTest->peek());
-
-		Data response;
-		CHECK(unitUnderTest->receive(response));
-		Data expected
-		{ 123, true };
-		CHECK(response == expected);
 	}
 }

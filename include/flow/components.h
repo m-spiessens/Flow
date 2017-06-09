@@ -190,10 +190,8 @@ public:
 	}
 };
 
-enum Tick
-{
-	TICK
-};
+typedef char Tick;
+#define TICK ((Tick)0)
 
 class Timer: public Flow::Component
 {
