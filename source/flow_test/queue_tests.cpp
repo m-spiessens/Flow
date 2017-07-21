@@ -35,7 +35,7 @@ using Flow::Queue;
 
 const static unsigned int UNITS = 3;
 const static unsigned int QUEUE_SIZE[UNITS] =
-{ 1, 10, 255 };
+{ 1, 10, 1000 };
 
 TEST_GROUP(Queue_TestBench)
 {
