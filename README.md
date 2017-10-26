@@ -16,7 +16,7 @@ A component can have in- and/or output port(s). A typical component will receive
 
 ### Connection
 
-Connections are pipes from the pipes and filters design pattern. An output port can be connected to an input port. A connection can behave as a queue, allowing multiple data element to be buffered. Or a connection can connect a constant data element to an input port. One output port can be connected to one input port, one-to-many or many-to-one connections are not supported. One-to-many or many-to-one can achieved by using components that implement split/tee or zip/combine behavior for example.
+Connections are pipes from the pipes and filters design pattern. An output port can be connected to an input port. A connection can behave as a queue, allowing multiple data element to be buffered. One output port can be connected to one input port, one-to-many or many-to-one connections are not supported. One-to-many or many-to-one can achieved by using components that implement split/tee or zip/combine behavior for example. Connections are perfectly safe from race conditions when the connected components run concurrently.
 
 ## Examples
 
@@ -30,9 +30,9 @@ First of all the three components are created (these implement the ```Flow::Comp
 
 ```C++
 // Create the components of the application.
-Timer* timer = new Timer();
-Toggle* periodToggle = new Toggle();
-DigitalOutput* led = new DigitalOutput(Gpio::Name{Gpio::Port::F, 0});
+Timer* timer = new Timer(100 /*ms*/);
+Toggle* toggle = new Toggle();
+DigitalOutput* led = new DigitalOutput(Gpio::Name{ Gpio::Port::N, 1 });
 
 ```
 
@@ -42,10 +42,8 @@ The components (actually the ports of the components) are connected so they can 
 // Connect the components of the application.
 Flow::Connection* connections[] =
 {
-	// Configure the timer with a fixed period of 250 ms.
-	Flow::connect(250u, timer->inPeriod),
-	Flow::connect(timer->outTick, periodToggle->tick),
-	Flow::connect(periodToggle->out, led->inValue)
+	Flow::connect(timer->outTick, toggle->tick),
+	Flow::connect(toggle->out, led->inValue)
 };
 ```
 
@@ -53,19 +51,18 @@ The components must be deployed. The timer is deployed in the SysTick context. W
 
 ```
 // Define the deployment of the components.
+Flow::Component* mainComponents[] =
+{
+	toggle,
+	led
+};
 
 Flow::Component* sysTickComponents[] =
 {
 	timer
 };
-
-Flow::Component* mainComponents[] =
-{
-	periodToggle,
-	led
-};
 ```
-The full example can be found as [blinky in the Cynara repository](https://github.com/CynaraKrewe/Cynara/tree/master/Software/blinky).
+The full example can be found as [FlowBlinky](https://github.com/CynaraKrewe/FlowBlinky).
 
 ### Ping pong (C++ threads, OS)
 
