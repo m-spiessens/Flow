@@ -165,8 +165,8 @@ TEST(Port_TestBench, Threadsafe)
 	std::thread producerThread(producer, &outUnitUnderTest, count);
 	std::thread consumerThread(consumer, &inUnitUnderTest, count, &success);
 
-	CHECK(success);
-
 	producerThread.join();
 	consumerThread.join();
+
+	CHECK(success);
 }

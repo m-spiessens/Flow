@@ -36,6 +36,9 @@ class InPort;
 template<typename Type>
 class OutPort;
 
+template<typename Type>
+class InOutPort;
+
 class Connection
 {
 public:
@@ -86,6 +89,20 @@ public:
 private:
 	InPort<Type>& receiver;
 	OutPort<Type>& sender;
+};
+
+template<typename Type>
+class BiDirectionalConnectionOfType: public Connection
+{
+public:
+	BiDirectionalConnectionOfType(InOutPort<Type>& portA, InOutPort<Type>& portB,
+			unsigned int size) :
+			connectionA(ConnectionOfType<Type>(portA, portB, size)),
+			connectionB(ConnectionOfType<Type>(portB, portA, size))
+	{}
+
+private:
+	ConnectionOfType<Type> connectionA, connectionB;
 };
 
 template<typename Type>
@@ -168,11 +185,32 @@ private:
 	friend class ConnectionOfType<Type> ;
 };
 
+
+
+template<typename Type>
+class InOutPort
+:	public InPort<Type>,
+	public OutPort<Type>
+{
+public:
+	InOutPort<Type>()
+	:	InPort<Type>(),
+		OutPort<Type>()
+	{}
+};
+
 template<typename Type>
 Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 		unsigned int size = 1)
 {
 	return new ConnectionOfType<Type>(sender, receiver, size);
+}
+
+template<typename Type>
+Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
+		unsigned int size = 1)
+{
+	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
 }
 
 void disconnect(Connection* connection);
