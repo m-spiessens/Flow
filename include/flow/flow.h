@@ -1,25 +1,25 @@
-/*
- The MIT License (MIT)
-
- Copyright (c) 2017 Cynara Krewe
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software, hardware and associated documentation files (the "Solution"), to deal
- in the Solution without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Solution, and to permit persons to whom the Solution is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Solution.
-
- THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
- SOLUTION.
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Cynara Krewe
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software, hardware and associated documentation files (the "Solution"), to deal
+ * in the Solution without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Solution, and to permit persons to whom the Solution is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Solution.
+ *
+ * THE SOLUTION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOLUTION OR THE USE OR OTHER DEALINGS IN THE
+ * SOLUTION.
  */
 
 #ifndef FLOW_FLOW_H_
@@ -53,7 +53,7 @@ class ConnectionOfType: public Connection,
 {
 public:
 	ConnectionOfType(OutPort<Type>& sender, InPort<Type>& receiver,
-			unsigned int size) :
+			uint16_t size) :
 			Queue<Type>(size), receiver(receiver), sender(sender)
 	{
 		receiver.connect(this);
@@ -96,7 +96,7 @@ class BiDirectionalConnectionOfType: public Connection
 {
 public:
 	BiDirectionalConnectionOfType(InOutPort<Type>& portA, InOutPort<Type>& portB,
-			unsigned int size) :
+			uint16_t size) :
 			connectionA(ConnectionOfType<Type>(portA, portB, size)),
 			connectionB(ConnectionOfType<Type>(portB, portA, size))
 	{}
@@ -201,14 +201,14 @@ public:
 
 template<typename Type>
 Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
-		unsigned int size = 1)
+		uint16_t size = 1)
 {
 	return new ConnectionOfType<Type>(sender, receiver, size);
 }
 
 template<typename Type>
 Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
-		unsigned int size = 1)
+		uint16_t size = 1)
 {
 	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
 }
