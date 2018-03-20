@@ -26,6 +26,7 @@
 #define FLOW_QUEUE_H_
 
 #include <stdint.h>
+#include <utility>
 
 namespace Flow
 {
@@ -35,17 +36,53 @@ class Queue
 {
 private:
 	DataType* _data;
-	const uint16_t _size;
+	uint16_t _size;
 	volatile uint16_t _first;
 	volatile uint16_t _last;
 	volatile uint16_t _enqueued;
 	volatile uint16_t _dequeued;
 
 public:
-	Queue(uint16_t size) :
+	explicit Queue(uint16_t size) :
 			_size(size), _first(0), _last(0), _enqueued(0), _dequeued(0)
 	{
-		_data = new DataType[size];
+		_data = new DataType[_size];
+	}
+
+	explicit Queue(const Queue<DataType>& other) :
+		_size(other._size), _first(other._first), _last(other._last),
+		_enqueued(other._enqueued), _dequeued(other._dequeued)
+	{
+		_data = new DataType[_size];
+
+		for(uint_fast16_t i = 0; i < _size; i++)
+		{
+			_data[i] = other._data[i];
+		}
+	}
+
+	Queue& operator=(const Queue<DataType>& other)
+	{
+		Queue<DataType> shadow(other);
+		*this = std::move(shadow);
+		return *this;
+	}
+
+	Queue& operator=(Queue<DataType>&& other) noexcept
+	{
+		if(this != &other)
+		{
+			delete[] _data;
+			_data = other._data;
+			other._data = nullptr;
+			_size = other._size;
+			_first = other._first;
+			_last = other._last;
+			_enqueued = other._enqueued;
+			_dequeued = other._dequeued;
+		}
+
+		return *this;
 	}
 
 	~Queue()

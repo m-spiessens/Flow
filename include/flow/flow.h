@@ -124,9 +124,6 @@ public:
 		return this->isConnected() ? this->connection->peek() : false;
 	}
 
-private:
-	ConnectionOfType<Type>* connection = nullptr;
-
 	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
@@ -137,12 +134,13 @@ private:
 		this->connection = nullptr;
 	}
 
-	bool isConnected()
+private:
+	ConnectionOfType<Type>* connection = nullptr;
+
+	bool isConnected() const
 	{
 		return this->connection != nullptr;
 	}
-
-	friend class ConnectionOfType<Type> ;
 };
 
 template<typename Type>
@@ -164,9 +162,6 @@ public:
 		return this->isConnected() ? this->connection->full() : false;
 	}
 
-private:
-	ConnectionOfType<Type>* connection;
-
 	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
@@ -177,12 +172,13 @@ private:
 		this->connection = nullptr;
 	}
 
-	bool isConnected()
+private:
+	ConnectionOfType<Type>* connection;
+
+	bool isConnected() const
 	{
 		return this->connection != nullptr;
 	}
-
-	friend class ConnectionOfType<Type> ;
 };
 
 

@@ -68,7 +68,7 @@ public:
 	Flow::InPort<Type> in;
 	Flow::OutPort<unsigned int> out;
 
-	Counter(unsigned int range) :
+	explicit Counter(unsigned int range) :
 			range(range)
 	{
 	}
@@ -104,7 +104,7 @@ public:
 	Flow::InPort<Type> in;
 	Flow::OutPort<unsigned int> out;
 
-	UpDownCounter(unsigned int downLimit, unsigned int upLimit,
+	explicit UpDownCounter(unsigned int downLimit, unsigned int upLimit,
 			unsigned int startValue) :
 			counter(startValue), upLimit(upLimit), downLimit(downLimit)
 	{
@@ -198,7 +198,7 @@ class Timer: public Flow::Component
 public:
 	Flow::OutPort<Tick> outTick;
 
-	Timer(unsigned int period);
+	explicit Timer(unsigned int period);
 
 	void run();
 
