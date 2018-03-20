@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cppcheck -I include --enable=warning --enable=style --enable=performance --enable=portability --enable=information --enable=missingInclude --std=c++11 source/flow
+cppcheck -I include --enable=warning --enable=style --enable=performance --enable=portability --enable=information --enable=missingInclude --std=c++11 --check-config source/flow
