@@ -95,7 +95,7 @@ TEST(Component_Split_TestBench, Split)
 
 	unitUnderTest->run();
 
-	char response;
+	char response = 0;
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
 		CHECK(inResponse[i].receive(response));

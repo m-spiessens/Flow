@@ -61,6 +61,7 @@ TEST(Port_TestBench, IsEmptyAfterCreation)
 	CHECK(!inUnitUnderTest.peek());
 	Data response;
 	CHECK(!inUnitUnderTest.receive(response));
+	CHECK(!outUnitUnderTest.full());
 }
 
 TEST(Port_TestBench, SendReceiveItem)
@@ -98,6 +99,7 @@ TEST(Port_TestBench, FullConnection)
 
 	// Port should not be empty.
 	CHECK(inUnitUnderTest.peek());
+	CHECK(outUnitUnderTest.full());
 
 	// Port shouldn't accept any more items.
 	CHECK(!outUnitUnderTest.send(lastStimulus));
@@ -115,6 +117,7 @@ TEST(Port_TestBench, FullConnection)
 
 		// Port should not be empty.
 		CHECK(inUnitUnderTest.peek());
+		CHECK(!outUnitUnderTest.full());
 	}
 
 	// Should get another item from the Port.
@@ -125,6 +128,7 @@ TEST(Port_TestBench, FullConnection)
 
 	// Port should be empty.
 	CHECK(!inUnitUnderTest.peek());
+	CHECK(!outUnitUnderTest.full());
 
 	// Shouldn't get another item from the Port.
 	CHECK(!inUnitUnderTest.receive(response));

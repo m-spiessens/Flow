@@ -90,7 +90,7 @@ TEST(Component_Combine_TestBench, CompleteCombine)
 
 	unitUnderTest->run();
 
-	char response;
+	char response = 0;
 	for (unsigned int i = 0; i < COMBINE_COUNT; i++)
 	{
 		CHECK(inResponse.receive(response));
@@ -129,7 +129,7 @@ TEST(Component_Combine_TestBench, PartialCombine)
 
 	unitUnderTest->run();
 
-	char response;
+	char response = 0;
 	CHECK(inResponse.receive(response));
 
 	char expected = 0;

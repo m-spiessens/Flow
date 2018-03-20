@@ -99,13 +99,13 @@ public:
 		return success;
 	}
 
-	bool peek(DataType* const element) const
+	bool peek(DataType& element) const
 	{
 		bool success = false;
 
 		if (!isEmpty())
 		{
-			*element = _data[_first];
+			element = _data[_first];
 
 			success = true;
 		}

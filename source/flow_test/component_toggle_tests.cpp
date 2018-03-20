@@ -75,7 +75,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	unitUnderTest->run();
 
-	bool previousResponse;
+	bool previousResponse = false;
 	CHECK(inResponse.receive(previousResponse));
 
 	unitUnderTest->run();
@@ -90,7 +90,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	unitUnderTest->run();
 
-	bool currentResponse;
+	bool currentResponse = false;
 	CHECK(inResponse.receive(currentResponse));
 
 	bool expected = !previousResponse;

@@ -75,7 +75,7 @@ TEST(Component_Counter_TestBench, Counting)
 
 	unitUnderTest->run();
 
-	unsigned int response;
+	unsigned int response = 0;
 	CHECK(inResponse.receive(response));
 
 	unsigned int expected = 1;

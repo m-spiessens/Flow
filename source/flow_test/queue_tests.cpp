@@ -65,6 +65,7 @@ TEST(Queue_TestBench, IsEmptyAfterCreation)
 		CHECK(unitUnderTest[i]->isEmpty());
 		Data response;
 		CHECK(!unitUnderTest[i]->dequeue(response));
+		CHECK(!unitUnderTest[i]->peek(response));
 	}
 }
 
@@ -76,7 +77,10 @@ TEST(Queue_TestBench, EnqueueDequeueItem)
 		Data stimulus = Data(123, true);
 		CHECK(unitUnderTest[i]->enqueue(stimulus));
 		CHECK(!unitUnderTest[i]->isEmpty());
-		Data response;
+		Data response = Data();
+		CHECK(unitUnderTest[i]->peek(response));
+		CHECK(stimulus == response);
+		response = Data();
 		CHECK(unitUnderTest[i]->dequeue(response));
 		CHECK(stimulus == response);
 		CHECK(unitUnderTest[i]->isEmpty());

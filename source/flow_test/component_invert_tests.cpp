@@ -75,7 +75,7 @@ TEST(Component_Invert_TestBench, FalseIsTrue)
 
 	unitUnderTest->run();
 
-	bool response;
+	bool response = false;
 	CHECK(inResponse.receive(response));
 
 	bool expected = true;
@@ -90,7 +90,7 @@ TEST(Component_Invert_TestBench, TrueIsFalse)
 
 	unitUnderTest->run();
 
-	bool response;
+	bool response = false;
 	CHECK(inResponse.receive(response));
 
 	bool expected = false;

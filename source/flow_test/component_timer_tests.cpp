@@ -76,7 +76,7 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 
 	unitUnderTest->run();
 
-	Tick tick;
+	Tick tick = 1;
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
