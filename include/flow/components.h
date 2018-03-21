@@ -66,9 +66,9 @@ class Counter: public Flow::Component
 {
 public:
 	Flow::InPort<Type> in;
-	Flow::OutPort<unsigned int> out;
+	Flow::OutPort<uint32_t> out;
 
-	explicit Counter(unsigned int range) :
+	explicit Counter(uint32_t range) :
 			range(range)
 	{
 	}
@@ -93,8 +93,8 @@ public:
 	}
 
 private:
-	unsigned int counter = 0;
-	const unsigned int range;
+	uint_fast32_t counter = 0;
+	const uint_fast32_t range;
 };
 
 template<typename Type>
@@ -102,10 +102,10 @@ class UpDownCounter: public Flow::Component
 {
 public:
 	Flow::InPort<Type> in;
-	Flow::OutPort<unsigned int> out;
+	Flow::OutPort<uint32_t> out;
 
-	explicit UpDownCounter(unsigned int downLimit, unsigned int upLimit,
-			unsigned int startValue) :
+	explicit UpDownCounter(uint32_t downLimit, uint32_t upLimit,
+			uint32_t startValue) :
 			counter(startValue), upLimit(upLimit), downLimit(downLimit)
 	{
 	}
@@ -144,13 +144,13 @@ public:
 	}
 
 private:
-	unsigned int counter;
-	const unsigned int upLimit;
-	const unsigned int downLimit;
+	uint_fast32_t counter;
+	const uint_fast32_t upLimit;
+	const uint_fast32_t downLimit;
 	bool up = true;
 };
 
-template<typename Type, unsigned int outputs>
+template<typename Type, uint8_t outputs>
 class Split: public Flow::Component
 {
 public:
@@ -162,7 +162,7 @@ public:
 		Type b;
 		if (in.receive(b))
 		{
-			for (unsigned int i = 0; i < outputs; i++)
+			for (uint_fast8_t i = 0; i < outputs; i++)
 			{
 				out[i].send(b);
 			}
@@ -170,7 +170,7 @@ public:
 	}
 };
 
-template<typename Type, unsigned int inputs>
+template<typename Type, uint8_t inputs>
 class Combine: public Flow::Component
 {
 public:
@@ -179,7 +179,7 @@ public:
 
 	void run() override
 	{
-		for (unsigned int i = 0; i < inputs; i++)
+		for (uint_fast8_t i = 0; i < inputs; i++)
 		{
 			Type b;
 			while (in[i].receive(b))
@@ -198,13 +198,13 @@ class Timer: public Flow::Component
 public:
 	Flow::OutPort<Tick> outTick;
 
-	explicit Timer(unsigned int period);
+	explicit Timer(uint32_t period);
 
 	void run();
 
 private:
-	const unsigned int period;
-	unsigned int sysTicks = 0;
+	const uint_fast32_t period;
+	uint_fast32_t sysTicks = 0;
 };
 
 class Toggle: public Flow::Component

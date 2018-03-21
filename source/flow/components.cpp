@@ -24,7 +24,7 @@
 
 #include "flow/components.h"
 
-Timer::Timer(unsigned int period) :
+Timer::Timer(uint32_t period) :
 		period(period)
 {
 }
