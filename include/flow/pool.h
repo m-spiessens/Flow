@@ -41,14 +41,47 @@ private:
 	Queue<DataType*> _available;
 
 public:
-	Pool(uint16_t size) :
-			_size(size), _data(new DataType[size]), _available(
-					Queue<DataType*>(_size))
+	explicit Pool(uint16_t size) :
+			_size(size),
+			_data(new DataType[_size]),
+			_available(Queue<DataType*>(_size))
 	{
 		for (uint_fast16_t i = 0; i < _size; i++)
 		{
 			_available.enqueue(&_data[i]);
 		}
+	}
+
+	explicit Pool(const Pool<DataType>& other) :
+			_size(other._size),
+			_data(new DataType[_size]),
+			_available(other._available)
+	{
+		for (uint_fast16_t i = 0; i < _size; i++)
+		{
+			_data[i] = other._data[i];
+		}
+	}
+
+	Pool& operator=(const Pool<DataType>& other)
+	{
+		Pool<DataType> shadow(other);
+		*this = std::move(shadow);
+		return *this;
+	}
+
+	Pool& operator=(Pool<DataType>&& other) noexcept
+	{
+		if(this != &other)
+		{
+			delete[] _data;
+			_data = other._data;
+			other._data = nullptr;
+			_size = other._size;
+			_available = other._available;
+		}
+
+		return *this;
 	}
 
 	~Pool()

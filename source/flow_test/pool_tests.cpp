@@ -62,6 +62,16 @@ TEST_GROUP(Pool_TestBench)
 	}
 };
 
+TEST(Pool_TestBench, CopyConstructor)
+{
+	Pool<char> other(1);
+	other.take();
+	Pool<char> some(2);
+	Pool<char> copied(other);
+	some = copied;
+	CHECK(!other.haveAvailable());
+}
+
 TEST(Pool_TestBench, HaveAvailableAfterCreation)
 {
 	for (unsigned int i = 0; i < UNITS; i++)

@@ -44,14 +44,21 @@ private:
 
 public:
 	explicit Queue(uint16_t size) :
-			_size(size), _first(0), _last(0), _enqueued(0), _dequeued(0)
+			_size(size),
+			_first(0),
+			_last(0),
+			_enqueued(0),
+			_dequeued(0)
 	{
 		_data = new DataType[_size];
 	}
 
 	explicit Queue(const Queue<DataType>& other) :
-		_size(other._size), _first(other._first), _last(other._last),
-		_enqueued(other._enqueued), _dequeued(other._dequeued)
+			_size(other._size),
+			_first(other._first),
+			_last(other._last),
+			_enqueued(other._enqueued),
+			_dequeued(other._dequeued)
 	{
 		_data = new DataType[_size];
 
