@@ -31,6 +31,10 @@
 namespace Flow
 {
 
+/**
+ * \brief Implementation of a queue or FIFO.
+ * A queue is thread safe in the sense that the enqueue() and dequeue() can be called concurrently.
+ */
 template<typename DataType>
 class Queue
 {
@@ -43,6 +47,11 @@ private:
 	volatile uint16_t _dequeued;
 
 public:
+	/**
+	 * \brief Create a queue.
+	 * The array of DataType will be allocated on the heap.
+	 * \param size The size of the queue in number of DataType.
+	 */
 	explicit Queue(uint16_t size) :
 			_size(size),
 			_first(0),
@@ -53,6 +62,12 @@ public:
 		_data = new DataType[_size];
 	}
 
+	/**
+	 * \brief Copy constructor.
+	 * Performs a complete, deep copy of the given queue.
+	 * The array of DataType will be allocated on the heap.
+	 * \param other Queue to be copied.
+	 */
 	explicit Queue(const Queue<DataType>& other) :
 			_size(other._size),
 			_first(other._first),
@@ -68,6 +83,9 @@ public:
 		}
 	}
 
+	/**
+	 * \brief Assignment operator.
+	 */
 	Queue& operator=(const Queue<DataType>& other)
 	{
 		Queue<DataType> shadow(other);
@@ -75,6 +93,9 @@ public:
 		return *this;
 	}
 
+	/**
+	 * \brief Move operator.
+	 */
 	Queue& operator=(Queue<DataType>&& other) noexcept
 	{
 		if(this != &other)
@@ -92,21 +113,38 @@ public:
 		return *this;
 	}
 
+	/**
+	 * \brief Destructor.
+	 * Deallocates the array of DataType from the heap.
+	 */
 	~Queue()
 	{
 		delete[] _data;
 	}
 
+	/**
+	 * \brief Is the queue empty?
+	 */
 	bool isEmpty() const
 	{
 		return (_enqueued == _dequeued);
 	}
 
+	/**
+	 * \brief Is the queue full?
+	 */
 	bool isFull() const
 	{
 		return (_enqueued == static_cast<uint16_t>(_dequeued + _size));
 	}
 
+	/**
+	 * \brief Enqueue an element of DataType.
+	 * Can be called concurrently with respect to dequeue().
+	 * If the queue is full the given element is not added.
+	 * \param element The element to be enqueued.
+	 * \return The element was successfully enqueued.
+	 */
 	bool enqueue(const DataType& element)
 	{
 		bool success = false;
@@ -125,6 +163,14 @@ public:
 		return success;
 	}
 
+	/**
+	 * \brief Dequeue an element of DataType.
+	 * Can be called concurrently with respect to enqueue().
+	 * \param element [output] The dequeued element.
+	 * 		The return value indicates whether the element is valid.
+	 * \return An element was successfully dequeued.
+	 * 		Thus the element output parameter has a valid value.
+	 */
 	bool dequeue(DataType& element)
 	{
 		bool success = false;
@@ -143,6 +189,14 @@ public:
 		return success;
 	}
 
+	/**
+	 * \brief Peek in the queue.
+	 * Does not modify the queue in any way.
+	 * \param element [output] The next element to be dequeued.
+	 * 		The return value indicates whether the element is valid.
+	 * \return The queue is not empty.
+	 * 		Thus the element output parameter has a valid value.
+	 */
 	bool peek(DataType& element) const
 	{
 		bool success = false;
