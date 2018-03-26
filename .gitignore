@@ -10,5 +10,4 @@ Release
 .settings
 .externalToolBuilders
 /__pycache__/
-/html/
-/latex/
+/documentation/
