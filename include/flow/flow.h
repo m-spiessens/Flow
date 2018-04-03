@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) 2018 Cynara Krewe
  *
@@ -27,6 +26,9 @@
 
 #include "queue.h"
 
+/**
+ * \brief Flow is a pipes and filters implementation tailored for (but not exclusive to) microcontrollers.
+ */
 namespace Flow
 {
 
@@ -39,6 +41,11 @@ class OutPort;
 template<typename Type>
 class InOutPort;
 
+/**
+ * \brief A connection between component ports.
+ *
+ * \note Recommendation: use Flow::disconnect() instead.
+ */
 class Connection
 {
 public:
@@ -47,11 +54,23 @@ public:
 	}
 };
 
+/**
+ * \brief A connection of some type between component ports.
+ *
+ * \note Recommendation: use Flow::connect() instead.
+ */
 template<typename Type>
 class ConnectionOfType: public Connection,
 		protected Queue<Type>
 {
 public:
+	/**
+	 * \brief Create a connection between an output and input port.
+	 *
+	 * \param sender The output port to be connected.
+	 * \param receiver The input port to be connected.
+	 * \param size The amount of elements the connection can buffer.
+	 */
 	ConnectionOfType(OutPort<Type>& sender, InPort<Type>& receiver,
 			uint16_t size) :
 			Queue<Type>(size), receiver(receiver), sender(sender)
@@ -60,27 +79,55 @@ public:
 		sender.connect(this);
 	}
 
+	/**
+	 * \brief Destructor.
+	 */
 	virtual ~ConnectionOfType()
 	{
 		sender.disconnect();
 		receiver.disconnect();
 	}
 
+	/**
+	 * \brief Send an element over the connection.
+	 *
+	 * Can be called concurrently with respect to receive().
+	 * If the buffering capacity of the connection is full the given element is not added.
+	 *
+	 * \param element The element to be sent.
+	 * \return The element was successfully sent.
+	 */
 	bool send(const Type& element)
 	{
 		return this->enqueue(element);
 	}
 
+	/**
+	 * \brief Receive an element from the connection.
+	 *
+	 * Can be called concurrently with respect to send().
+	 *
+	 * \param element [output] The received element.
+	 * 		The return value indicates whether the element is valid.
+	 * \return An element was successfully received.
+	 * 		Thus the element output parameter has a valid value.
+	 */
 	bool receive(Type& element)
 	{
 		return this->dequeue(element);
 	}
 
+	/**
+	 * \brief Is an element available for receiving?
+	 */
 	bool peek()
 	{
 		return !this->isEmpty();
 	}
 
+	/**
+	 * \brief Is the connection full?
+	 */
 	bool full()
 	{
 		return this->isFull();
@@ -91,6 +138,11 @@ private:
 	OutPort<Type>& sender;
 };
 
+/**
+ * \brief A bidirectional connection of some type between bidirectional component ports.
+ *
+ * \note Recommendation: use Flow::connect() instead.
+ */
 template<typename Type>
 class BiDirectionalConnectionOfType: public Connection
 {
@@ -105,30 +157,61 @@ private:
 	ConnectionOfType<Type> connectionA, connectionB;
 };
 
+/**
+ * \brief An input port of a component.
+ */
 template<typename Type>
 class InPort
 {
 public:
+	/**
+	 * \brief Create an input port.
+	 */
 	InPort<Type>() :
 			connection(nullptr)
 	{
 	}
 
+	/**
+	 * \brief Receive an element from the input port.
+	 *
+	 * Can be called concurrently with respect to send() of the connected output port.
+	 *
+	 * \param element [output] The received element.
+	 * 		The return value indicates whether the element is valid.
+	 * \return An element was successfully received.
+	 * 		Thus the element output parameter has a valid value.
+	 */
 	bool receive(Type& element)
 	{
 		return this->isConnected() ? this->connection->receive(element) : false;
 	}
 
+	/**
+	 * \brief Is an element available for receiving?
+	 */
 	bool peek()
 	{
 		return this->isConnected() ? this->connection->peek() : false;
 	}
 
+	/**
+	 * \brief Associate this input port with a connection.
+	 *
+	 * \note Recommendation: use Flow::connect() instead.
+	 *
+	 * \param connection The connection to be associated.
+	 */
 	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
 	}
 
+	/**
+	 * \brief Dissociate this input port and it's connection.
+	 *
+	 * \note Recommendation: use Flow::disconnect() instead.
+	 */
 	void disconnect()
 	{
 		this->connection = nullptr;
@@ -137,12 +220,18 @@ public:
 private:
 	ConnectionOfType<Type>* connection = nullptr;
 
+	/**
+	 * \brief Is this input port associated with a connection?
+	 */
 	bool isConnected() const
 	{
 		return this->connection != nullptr;
 	}
 };
 
+/**
+ * \brief An output port of a component.
+ */
 template<typename Type>
 class OutPort
 {
@@ -152,21 +241,46 @@ public:
 	{
 	}
 
+	/**
+	 * \brief Send an element from the output port.
+	 *
+	 * Can be called concurrently with respect to receive() of the connected input port.
+	 * If the buffering capacity of the connection is full or the port is not connected
+	 * the given element is not added.
+	 *
+	 * \param element The element to be sent.
+	 * \return The element was successfully sent.
+	 */
 	bool send(const Type& element)
 	{
 		return this->isConnected() ? this->connection->send(element) : false;
 	}
 
+	/**
+	 * \brief Is the connection associated with this output port full?
+	 */
 	bool full()
 	{
 		return this->isConnected() ? this->connection->full() : false;
 	}
 
+	/**
+	 * \brief Associate this output port with a connection.
+	 *
+	 * \note Recommendation: use Flow::connect() instead.
+	 *
+	 * \param connection The connection to be associated.
+	 */
 	void connect(ConnectionOfType<Type>* connection)
 	{
 		this->connection = connection;
 	}
 
+	/**
+	 * \brief Dissociate this output port and it's connection.
+	 *
+	 * \note Recommendation: use Flow::disconnect() instead.
+	 */
 	void disconnect()
 	{
 		this->connection = nullptr;
@@ -181,8 +295,11 @@ private:
 	}
 };
 
-
-
+/**
+ * \brief A bidirectional port of a component.
+ *
+ * \note Recommendation: use Flow::connect() instead.
+ */
 template<typename Type>
 class InOutPort
 :	public InPort<Type>,
@@ -195,6 +312,20 @@ public:
 	{}
 };
 
+/**
+ * \brief Remove a connection.
+ *
+ * \param connection The connection to be removed.
+ */
+void disconnect(Connection* connection);
+
+/**
+ * \brief Connect an output port to an input port.
+ *
+ * \param sender The output port to be connected.
+ * \param receiver The input port to be connected.
+ * \param size The amount of elements the connection can buffer.
+ */
 template<typename Type>
 Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 		uint16_t size = 1)
@@ -202,6 +333,13 @@ Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 	return new ConnectionOfType<Type>(sender, receiver, size);
 }
 
+/**
+ * \brief Connect two bidirectional ports.
+ *
+ * \param portA One of the bidirectional ports.
+ * \param portB The other of the bidirectional ports.
+ * \param size The amount of elements the connection can buffer.
+ */
 template<typename Type>
 Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
 		uint16_t size = 1)
@@ -209,8 +347,9 @@ Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
 	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
 }
 
-void disconnect(Connection* connection);
-
+/**
+ * \brief A representation of a component.
+ */
 class Component
 {
 public:
@@ -218,6 +357,12 @@ public:
 	{
 	}
 
+	/**
+	 * \brief Let the component execute its functionality.
+	 *
+	 * Typically the component will receive data from its input port(s),
+	 * perform a specific function and send the result(s) to its output port(s).
+	 */
 	virtual void run() = 0;
 };
 

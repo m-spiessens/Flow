@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) 2018 Cynara Krewe
  *
@@ -26,7 +25,12 @@
 #define UTILITY_H_
 
 #ifndef ArraySizeOf
+
+/**
+ * \brief Size of an array.
+ */
 #define ArraySizeOf(a) (sizeof(a) / sizeof(a[0]))
+
 #endif // ArraySizeOf
 
 #endif /* UTILITY_H_ */

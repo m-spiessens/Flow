@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) 2018 Cynara Krewe
  *
@@ -27,6 +26,11 @@
 
 #include "flow.h"
 
+/**
+ * \brief A component that inverts a value.
+ *
+ * The '!' operator is used to apply the inversion.
+ */
 template<typename Type>
 class Invert: public Flow::Component
 {
@@ -44,6 +48,11 @@ public:
 	}
 };
 
+/**
+ * \brief Convert between types.
+ *
+ * A static_cast is used to perform the conversion.
+ */
 template<typename From, typename To>
 class Convert: public Flow::Component
 {
@@ -61,6 +70,12 @@ public:
 	}
 };
 
+/**
+ * \brief Count how many values were received.
+ *
+ * The counter will count from 0 to range - 1.
+ * When the counter is at range - 1 and another value is received it wraps around to 0.
+ */
 template<typename Type>
 class Counter: public Flow::Component
 {
@@ -68,6 +83,11 @@ public:
 	Flow::InPort<Type> in;
 	Flow::OutPort<uint32_t> out;
 
+	/**
+	 * \brief Create a counter.
+	 *
+	 * \param range The range specification of the counter.
+	 */
 	explicit Counter(uint32_t range) :
 			range(range)
 	{
@@ -97,6 +117,9 @@ private:
 	const uint_fast32_t range;
 };
 
+/**
+ * \brief Count up to the upper limit then count down to the lower limit and repeat.
+ */
 template<typename Type>
 class UpDownCounter: public Flow::Component
 {
@@ -150,6 +173,9 @@ private:
 	bool up = true;
 };
 
+/**
+ * Provides one-to-many semantic.
+ */
 template<typename Type, uint8_t outputs>
 class Split: public Flow::Component
 {
@@ -170,6 +196,13 @@ public:
 	}
 };
 
+/**
+ * Provides many-to-one semantic.
+ *
+ * The input port with lower index is given priority.
+ * All input ports are handled in depth-first semantic:
+ * all values of a input port will be processed before going to the next input port.
+ */
 template<typename Type, uint8_t inputs>
 class Combine: public Flow::Component
 {
@@ -177,7 +210,7 @@ public:
 	Flow::InPort<Type> in[inputs];
 	Flow::OutPort<Type> out;
 
-	void run() override
+	void run() final override
 	{
 		for (uint_fast8_t i = 0; i < inputs; i++)
 		{
@@ -193,6 +226,12 @@ public:
 typedef char Tick;
 #define TICK ((Tick)0)
 
+/**
+ * \brief Give an indication every period.
+ *
+ * This component can live in interrupt context of
+ * a "systick" timer as an alternative to a regular software timer.
+ */
 class Timer: public Flow::Component
 {
 public:
@@ -200,20 +239,23 @@ public:
 
 	explicit Timer(uint32_t period);
 
-	void run();
+	void run() final override;
 
 private:
 	const uint_fast32_t period;
 	uint_fast32_t sysTicks = 0;
 };
 
+/**
+ * \brief Toggles every indication (tick).
+ */
 class Toggle: public Flow::Component
 {
 public:
 	Flow::InPort<Tick> tick;
 	Flow::OutPort<bool> out;
 
-	void run();
+	void run() final override;
 
 private:
 	bool toggle = false;

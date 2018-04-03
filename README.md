@@ -1,4 +1,4 @@
-# Flow
+# Flow {#mainpage}
 
 [We have conan packages!](https://bintray.com/cynarakrewe/CynaraConan)
 
@@ -28,7 +28,7 @@ Blinky is composed of 3 components: a timer, toggling and a digital output. The 
 
 First of all the three components are created (these implement the ```Flow::Component``` interface):
 
-```C++
+```
 // Create the components of the application.
 Timer* timer = new Timer(100 /*ms*/);
 Toggle* toggle = new Toggle();

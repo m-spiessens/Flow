@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) 2018 Cynara Krewe
  *
@@ -28,11 +27,15 @@
 #include <stdint.h>
 #include <utility>
 
+/**
+ * \brief Flow is a pipes and filters implementation tailored for (but not exclusive to) microcontrollers.
+ */
 namespace Flow
 {
 
 /**
  * \brief Implementation of a queue or FIFO.
+ *
  * A queue is thread safe in the sense that the enqueue() and dequeue() can be called concurrently.
  */
 template<typename DataType>
@@ -49,7 +52,9 @@ private:
 public:
 	/**
 	 * \brief Create a queue.
+	 *
 	 * The array of DataType will be allocated on the heap.
+	 *
 	 * \param size The size of the queue in number of DataType.
 	 */
 	explicit Queue(uint16_t size) :
@@ -64,8 +69,10 @@ public:
 
 	/**
 	 * \brief Copy constructor.
+	 *
 	 * Performs a complete, deep copy of the given queue.
 	 * The array of DataType will be allocated on the heap.
+	 *
 	 * \param other Queue to be copied.
 	 */
 	explicit Queue(const Queue<DataType>& other) :
@@ -115,6 +122,7 @@ public:
 
 	/**
 	 * \brief Destructor.
+	 *
 	 * Deallocates the array of DataType from the heap.
 	 */
 	~Queue()
@@ -140,8 +148,10 @@ public:
 
 	/**
 	 * \brief Enqueue an element of DataType.
+	 *
 	 * Can be called concurrently with respect to dequeue().
 	 * If the queue is full the given element is not added.
+	 *
 	 * \param element The element to be enqueued.
 	 * \return The element was successfully enqueued.
 	 */
@@ -165,7 +175,9 @@ public:
 
 	/**
 	 * \brief Dequeue an element of DataType.
+	 *
 	 * Can be called concurrently with respect to enqueue().
+	 *
 	 * \param element [output] The dequeued element.
 	 * 		The return value indicates whether the element is valid.
 	 * \return An element was successfully dequeued.
@@ -191,7 +203,9 @@ public:
 
 	/**
 	 * \brief Peek in the queue.
+	 *
 	 * Does not modify the queue in any way.
+	 *
 	 * \param element [output] The next element to be dequeued.
 	 * 		The return value indicates whether the element is valid.
 	 * \return The queue is not empty.

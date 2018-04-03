@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) 2018 Cynara Krewe
  *
@@ -29,9 +28,21 @@
 
 #include "queue.h"
 
+/**
+ * \brief Flow is a pipes and filters implementation tailored for (but not exclusive to) microcontrollers.
+ */
 namespace Flow
 {
 
+/**
+ * \brief A pool of DataType elements.
+ *
+ * A pool can be used to effectively pass big data structures through connections between components.
+ * An element can be taken from the pool and passed around by reference.
+ * When taking an element the new owner is responsible to give it back to the pool at some point.
+ *
+ * A pool is thread safe in the sense that the take() and release() can be called concurrently.
+ */
 template<typename DataType>
 class Pool
 {
@@ -41,6 +52,13 @@ private:
 	Queue<DataType*> _available;
 
 public:
+	/**
+	 * \brief Create a heap.
+	 *
+	 * The array of DataType will be allocated on the heap.
+	 *
+	 * \param size The size of the pool in number of DataType.
+	 */
 	explicit Pool(uint16_t size) :
 			_size(size),
 			_data(new DataType[_size]),
@@ -52,6 +70,14 @@ public:
 		}
 	}
 
+	/**
+	 * \brief Copy constructor.
+	 *
+	 * Performs a complete, deep copy of the given pool.
+	 * The array of DataType will be allocated on the heap.
+	 *
+	 * \param other Pool to be copied.
+	 */
 	explicit Pool(const Pool<DataType>& other) :
 			_size(other._size),
 			_data(new DataType[_size]),
@@ -63,6 +89,9 @@ public:
 		}
 	}
 
+	/**
+	 * \brief Assignment operator.
+	 */
 	Pool& operator=(const Pool<DataType>& other)
 	{
 		Pool<DataType> shadow(other);
@@ -70,6 +99,9 @@ public:
 		return *this;
 	}
 
+	/**
+	 * \brief Move operator.
+	 */
 	Pool& operator=(Pool<DataType>&& other) noexcept
 	{
 		if(this != &other)
@@ -84,16 +116,33 @@ public:
 		return *this;
 	}
 
+	/**
+	 * \brief Destructor.
+	 *
+	 * Deallocates the array of DataType from the heap.
+	 */
 	~Pool()
 	{
 		delete[] _data;
 	}
 
+	/**
+	 * \brief Is an element available in the pool?
+	 */
 	bool haveAvailable() const
 	{
 		return !_available.isEmpty();
 	}
 
+	/**
+	 * \brief Take an element from the pool.
+	 *
+	 * When an element is taken from the pool, the new "owner" is responsible
+	 * to release it back into the pool when it is no longer needed.
+	 *
+	 * \return Pointer to an element if the pool had one available.
+	 * 		nullptr if no element was available.
+	 */
 	DataType* take()
 	{
 		DataType* take = nullptr;
@@ -103,6 +152,13 @@ public:
 		return take;
 	}
 
+	/**
+	 * \brief Release an element into the pool.
+	 *
+	 * \param element The element to be released into the pool.
+	 * \return The element was successfully put in the pool.
+	 * 		When not successful the take-release mechanism was violated.
+	 */
 	bool release(DataType& element)
 	{
 		return _available.enqueue(&element);
