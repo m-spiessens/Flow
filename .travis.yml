@@ -1,0 +1,14 @@
+language: cpp
+
+compiler:
+- gcc
+
+install:
+- pip install conan
+- conan user
+- conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
+- sudo apt-get install -qq build-essential eclipse-cdt
+
+script:
+- conan install
+- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
