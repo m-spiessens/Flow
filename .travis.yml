@@ -4,8 +4,7 @@ compiler:
 - gcc
 
 install:
-- pip install conan
-- conan user
+- sudo pip install conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - sudo apt-get install -qq build-essential eclipse-cdt
 
