@@ -9,5 +9,5 @@ install:
 - sudo apt-get install -qq build-essential eclipse-cdt
 
 script:
-- conan install
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
+- conan install CynaraKrewe/Flow
+- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import CynaraKrewe/Flow -cleanBuild "Flow/Release"
