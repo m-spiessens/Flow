@@ -1,4 +1,17 @@
+dist: trusty
 language: cpp
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
 compiler:
 - gcc
@@ -9,6 +22,6 @@ install:
 - sudo apt-get install -qq build-essential eclipse-cdt
 
 script:
-- cd ../..
-- conan install CynaraKrewe/Flow
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import CynaraKrewe/Flow -cleanBuild "Flow/Release"
+- cd ..
+- conan install Flow
+- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
