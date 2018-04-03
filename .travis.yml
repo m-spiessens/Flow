@@ -22,6 +22,6 @@ install:
 - sudo apt-get install -qq build-essential eclipse-cdt
 
 script:
+- conan install .
 - cd ..
-- conan install Flow
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
