@@ -25,3 +25,4 @@ script:
 - conan install .
 - cd ..
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
+- ./Flow/Release/Flow
