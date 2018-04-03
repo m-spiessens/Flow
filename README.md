@@ -1,5 +1,7 @@
 # Flow {#mainpage}
 
+[![Build Status](https://travis-ci.org/CynaraKrewe/Flow.svg?branch=master)](https://travis-ci.org/CynaraKrewe/Flow)
+
 [We have conan packages!](https://bintray.com/cynarakrewe/CynaraConan)
 
 Flow is a pipes and filters implementation tailored for (but not exclusive to) microcontrollers. It provides 3 concepts: component, port and connection.
