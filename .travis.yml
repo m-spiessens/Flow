@@ -20,7 +20,7 @@ before_install:
 - eval "${MATRIX_EVAL}"
 
 install:
-- sudo apt-get install -qq python3-pip build-essential eclipse-cdt
+- sudo apt-get install -qq build-essential eclipse-cdt
 - pip3 install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - conan install .
