@@ -34,4 +34,4 @@ after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/
 - ./Debug/Flow
-- coveralls -b Debug/ --gcov-options '\-lp' --gcov gcov-5
+- coveralls -b Debug/ --gcov-options '\-lp' --dryrun
