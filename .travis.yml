@@ -35,5 +35,4 @@ after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/Debug/
 - ./Flow
-- gcov-5 `find . -name *.o`
-- coveralls -n -b ./
+- coveralls -b ./ --gcov-options '\-lp' --gcov gcov-5
