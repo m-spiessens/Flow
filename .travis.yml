@@ -19,7 +19,6 @@ compiler:
 
 before_install:
 - eval "${MATRIX_EVAL}"
-- gcov-5 --version
 
 install:
 - sudo apt-get install -qq build-essential eclipse-cdt
@@ -34,6 +33,7 @@ script:
 
 after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
-- cd Flow/
-- ./Debug/Flow
-- coveralls -b Debug/ --gcov-options '\-lp' --dryrun --gcov /usr/bin/gcov-5
+- cd Flow/Debug/
+- ./Flow
+- gcov `find . -name *.o`
+- coveralls -n -b ./
