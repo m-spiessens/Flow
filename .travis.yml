@@ -18,21 +18,20 @@ compiler:
 
 before_install:
 - eval "${MATRIX_EVAL}"
-- pip install --user cpp-coveralls
 
 install:
-- sudo pip install conan
+- sudo apt-get install -qq python3-pip build-essential eclipse-cdt
+- pip3 install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
-- sudo apt-get install -qq build-essential eclipse-cdt
-
-script:
 - conan install .
 - cd ..
+
+script:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
 - ./Flow/Release/Flow
 
 after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
-- ./Flow/Debug/Flow
 - cd Flow/
+- ./Debug/Flow
 - coveralls -b Debug/ --gcov-options '\-lp'
