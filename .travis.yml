@@ -35,4 +35,4 @@ after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/
 - ./Debug/Flow
-- coveralls -b Debug/ -e include/CppUTest -e include/CppUTestExt/ -e include/flow_test/ -e source/flow_test/
+- coveralls -b Debug/ -e include/CppUTest -e include/CppUTestExt/
