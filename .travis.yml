@@ -21,7 +21,7 @@ before_install:
 
 install:
 - sudo apt-get install -qq build-essential eclipse-cdt
-- pip3 install --user cpp-coveralls conan
+- pip install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - conan install .
 - cd ..
