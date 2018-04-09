@@ -5,7 +5,7 @@ import shutil
 
 class FlowCore(ConanFile):
 	name = "Flow"
-	version = "1.5"
+	version = "1.6"
 	description = """Flow is a pipes and filters implementation tailored for microcontrollers. 
 		It provides 3 base concepts: component, port and connection."""
 	url = "https://github.com/CynaraKrewe/Flow"
@@ -14,10 +14,10 @@ class FlowCore(ConanFile):
 	build_policy = "missing"
 	
 	def source(self):
-		download("https://github.com/CynaraKrewe/Flow/archive/v1.5.zip", "Flow-1.5.zip")
-		unzip("Flow-1.5.zip")
-		shutil.move("Flow-1.5", "Flow")
-		os.unlink("Flow-1.5.zip")
+		download("https://github.com/CynaraKrewe/Flow/archive/v1.6.zip", "Flow-1.6.zip")
+		unzip("Flow-1.6.zip")
+		shutil.move("Flow-1.6", "Flow")
+		os.unlink("Flow-1.6.zip")
 
 	def build(self):
 		self.output.info("Nothing to build, this package provides sources.")

@@ -18,6 +18,7 @@ compiler:
 
 before_install:
 - eval "${MATRIX_EVAL}"
+- pip install --user cpp-coveralls
 
 install:
 - sudo pip install conan
@@ -29,3 +30,8 @@ script:
 - cd ..
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
 - ./Flow/Release/Flow
+
+after_success:
+- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
+- ./Flow/Debug/Flow
+- coveralls -b Flow/Debug/ --gcov-options '\-lp'
