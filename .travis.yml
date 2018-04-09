@@ -10,6 +10,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-5
+            - binutils
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
@@ -18,6 +19,7 @@ compiler:
 
 before_install:
 - eval "${MATRIX_EVAL}"
+- gcov-5 --version
 
 install:
 - sudo apt-get install -qq build-essential eclipse-cdt
@@ -34,4 +36,4 @@ after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/
 - ./Debug/Flow
-- coveralls -b Debug/ --gcov-options '\-lp' --dryrun
+- coveralls -b Debug/ --gcov-options '\-lp' --dryrun --gcov /usr/bin/gcov-5
