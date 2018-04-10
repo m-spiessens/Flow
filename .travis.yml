@@ -33,6 +33,8 @@ script:
 
 after_success:
 - eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
-- cd Flow/
-- ./Debug/Flow
-- coveralls -b Debug/ -e include/CppUTest -e include/CppUTestExt/
+- cd Flow/Debug/
+- ./Flow
+- gcov-5 `find . -name *.o`
+- cd ../
+- coveralls -n -b Debug/ -e include/CppUTest -e include/CppUTestExt/
