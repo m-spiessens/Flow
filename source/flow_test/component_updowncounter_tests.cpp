@@ -65,6 +65,7 @@ TEST(Component_UpDownCounter_TestBench, DormantWithoutStimulus)
 	CHECK(!inResponse.peek());
 
 	unitUnderTest->run();
+	dummy.run();
 
 	CHECK(!inResponse.peek());
 }

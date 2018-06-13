@@ -105,4 +105,17 @@ TEST(Component_Counter_TestBench, Counting)
 
 	expected = 7;
 	CHECK(response == expected);
+
+	CHECK(outStimulus.send(123));
+	CHECK(outStimulus.send(123));
+	CHECK(outStimulus.send(123));
+	CHECK(outStimulus.send(123));
+	CHECK(outStimulus.send(123));
+
+	unitUnderTest->run();
+
+	CHECK(inResponse.receive(response));
+
+	expected = 2;
+	CHECK(response == expected);
 }
