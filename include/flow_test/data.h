@@ -26,6 +26,8 @@
 
 #include <stdint.h>
 
+#include "flow/flow.h"
+
 class Data
 {
 public:
@@ -65,6 +67,12 @@ public:
 private:
 	uint64_t integer;
 	bool boolean;
+};
+
+class DummyComponent : public Flow::Component
+{
+public:
+	void run(){}
 };
 
 #endif // DATA_H_
