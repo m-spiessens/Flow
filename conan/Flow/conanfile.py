@@ -33,4 +33,5 @@ class FlowCore(ConanFile):
 		self.copy("components.cpp", "source/flow", "Flow/source/flow")
 		self.copy("flow.cpp", "source/flow", "Flow/source/flow")
 		self.copy("reactor.cpp", "source/flow", "Flow/source/flow")
-		self.copy("platform_*.cpp", "source/flow", "Flow/source/flow")
+		self.copy("platform_cpputest.cpp", "source/flow", "Flow/source/flow")
+		self.copy("platform_cortexm4.cpp", "source/flow", "Flow/source/flow")
