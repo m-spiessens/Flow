@@ -235,6 +235,29 @@ public:
 	}
 
 	/**
+	 * \brief Assignment operator.
+	 */
+	InPort& operator=(const InPort<Type>& other)
+	{
+		InPort<Type> shadow(other);
+		*this = std::move(shadow);
+		return *this;
+	}
+
+	/**
+	 * \brief Move operator.
+	 */
+	InPort& operator=(InPort<Type>&& other) noexcept
+	{
+		if(this != &other)
+		{
+			owner = other.owner;
+		}
+
+		return *this;
+	}
+
+	/**
 	 * \brief Receive an element from the input port.
 	 *
 	 * Can be called concurrently with respect to send() of the connected output port.
