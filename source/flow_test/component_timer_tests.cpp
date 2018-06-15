@@ -39,7 +39,7 @@ TEST_GROUP(Component_Timer_TestBench)
 {
 	Timer* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<Tick> inResponse{&dummy};
+	InPort<Tick> inResponse;
 
 	void setup()
 	{

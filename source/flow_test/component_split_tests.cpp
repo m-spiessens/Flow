@@ -53,7 +53,6 @@ TEST_GROUP(Component_Split_TestBench)
 
 		for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 		{
-			inResponse[i] = InPort<char>(&dummy);
 			inResponseConnection[i] = connect(unitUnderTest->out[i],
 					inResponse[i]);
 		}

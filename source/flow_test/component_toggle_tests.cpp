@@ -41,7 +41,7 @@ TEST_GROUP(Component_Toggle_TestBench)
 	Connection* outStimulusConnection;
 	Toggle* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<bool> inResponse{&dummy};
+	InPort<bool> inResponse;
 
 	void setup()
 	{

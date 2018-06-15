@@ -41,7 +41,7 @@ TEST_GROUP(Component_UpDownCounter_TestBench)
 	Connection* outStimulusConnection;
 	UpDownCounter<char>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<unsigned int> inResponse{&dummy};
+	InPort<unsigned int> inResponse;
 
 	void setup()
 	{
@@ -67,7 +67,6 @@ TEST(Component_UpDownCounter_TestBench, DormantWithoutStimulus)
 	CHECK(!inResponse.peek());
 
 	unitUnderTest->run();
-	dummy.run();
 
 	CHECK(!inResponse.peek());
 }

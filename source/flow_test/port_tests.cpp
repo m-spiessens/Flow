@@ -41,7 +41,7 @@ TEST_GROUP(Port_TestBench)
 {
 	Connection* connection;
 	OutPort<Data> outUnitUnderTest;
-	InPort<Data> inUnitUnderTest{&dummy};
+	InPort<Data> inUnitUnderTest;
 
 	void setup()
 	{

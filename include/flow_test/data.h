@@ -69,12 +69,4 @@ private:
 	bool boolean;
 };
 
-class DummyComponent : public Flow::Component
-{
-public:
-	void run(){}
-};
-
-extern DummyComponent dummy;
-
 #endif // DATA_H_

@@ -40,7 +40,7 @@ TEST_GROUP(Reactor_TestBench)
 
 #define COUNT 1000llu
 
-	Flow::InPort<uint32_t> inCount{&dummy};
+	Flow::InPort<uint32_t> inCount;
 
 	void setup()
 	{

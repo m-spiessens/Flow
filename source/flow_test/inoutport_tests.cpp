@@ -39,8 +39,8 @@ const static unsigned int CONNECTION_FIFO_SIZE = 10;
 TEST_GROUP(InOutPort_TestBench)
 {
 	Connection* connection;
-	InOutPort<Data> unitUnderTestA{&dummy};
-	InOutPort<Data> unitUnderTestB{&dummy};
+	InOutPort<Data> unitUnderTestA;
+	InOutPort<Data> unitUnderTestB;
 
 	void setup()
 	{

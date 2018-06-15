@@ -36,7 +36,7 @@ using Flow::InPort;
 
 const static unsigned int UNITS = 3;
 const static unsigned int CONNECTION_FIFO_SIZE[UNITS] =
-{ 1, 10, 255 };
+{ 1, 10, 1000 };
 
 TEST_GROUP(ConnectionOfType_TestBench)
 {
@@ -48,7 +48,6 @@ TEST_GROUP(ConnectionOfType_TestBench)
 	{
 		for (unsigned int i = 0; i < UNITS; i++)
 		{
-			receiver[i] = InPort<Data>{&dummy};
 			unitUnderTest[i] = new Flow::ConnectionOfType<Data>(sender[i],
 					receiver[i], CONNECTION_FIFO_SIZE[i]);
 		}
