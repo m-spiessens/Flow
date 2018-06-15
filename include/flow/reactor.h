@@ -64,6 +64,11 @@ public:
 	 */
 	void run();
 
+	/**
+	 * \brief Drop all registered components.
+	 */
+	void reset();
+
 private:
 	Reactor();
 

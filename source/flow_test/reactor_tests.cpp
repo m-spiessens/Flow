@@ -54,6 +54,8 @@ TEST_GROUP(Reactor_TestBench)
 		{
 			delete connection[i];
 		}
+
+		Flow::Reactor::theOne().reset();
 	}
 };
 

@@ -26,6 +26,7 @@
 #include "CppUTest/TestHarness.h"
 
 #include "flow/components.h"
+#include "flow/reactor.h"
 
 #include "flow_test/data.h"
 
@@ -56,6 +57,8 @@ TEST_GROUP(Component_Convert_TestBench)
 		disconnect(inResponseConnection);
 
 		delete unitUnderTest;
+
+		Flow::Reactor::theOne().reset();
 	}
 };
 

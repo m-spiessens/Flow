@@ -281,7 +281,10 @@ public:
 
 	void request()
 	{
-		owner->request();
+		if(owner != nullptr)
+		{
+			owner->request();
+		}
 	}
 
 private:

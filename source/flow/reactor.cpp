@@ -64,6 +64,12 @@ void Flow::Reactor::run()
 	}
 }
 
+void Flow::Reactor::reset()
+{
+	first = nullptr;
+	last = nullptr;
+}
+
 Flow::Reactor::Reactor()
 {
 }
