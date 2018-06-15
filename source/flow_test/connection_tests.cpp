@@ -34,114 +34,97 @@ using Flow::ConnectionOfType;
 using Flow::OutPort;
 using Flow::InPort;
 
-const static unsigned int UNITS = 3;
-const static unsigned int CONNECTION_FIFO_SIZE[UNITS] =
-{ 1, 10, 1000 };
+#define CONNECTION_FIFO_SIZE 1000
 
 TEST_GROUP(ConnectionOfType_TestBench)
 {
-	ConnectionOfType<Data>* unitUnderTest[UNITS];
-	OutPort<Data> sender[UNITS];
-	InPort<Data> receiver[UNITS];
+	ConnectionOfType<Data>* unitUnderTest;
+	OutPort<Data> sender;
+	InPort<Data> receiver;
 
 	void setup()
 	{
-		for (unsigned int i = 0; i < UNITS; i++)
-		{
-			unitUnderTest[i] = new Flow::ConnectionOfType<Data>(sender[i],
-					receiver[i], CONNECTION_FIFO_SIZE[i]);
-		}
+		unitUnderTest = new Flow::ConnectionOfType<Data>(sender,
+				receiver, CONNECTION_FIFO_SIZE);
 	}
 
 	void teardown()
 	{
-		for (unsigned int i = 0; i < UNITS; i++)
-		{
-			delete unitUnderTest[i];
-		}
+		delete unitUnderTest;
 	}
 };
 
 TEST(ConnectionOfType_TestBench, IsEmptyAfterCreation)
 {
-	for (unsigned int i = 0; i < UNITS; i++)
-	{
-		CHECK(!unitUnderTest[i]->peek());
-		Data response;
-		CHECK(!unitUnderTest[i]->receive(response));
-	}
+	CHECK(!unitUnderTest->peek());
+	Data response;
+	CHECK(!unitUnderTest->receive(response));
 }
 
 TEST(ConnectionOfType_TestBench, SendReceiveItem)
 {
-	for (unsigned int i = 0; i < UNITS; i++)
-	{
-		CHECK(!unitUnderTest[i]->peek());
-		Data stimulus = Data(123, true);
-		CHECK(unitUnderTest[i]->send(stimulus));
-		CHECK(unitUnderTest[i]->peek());
-		Data response;
-		CHECK(unitUnderTest[i]->receive(response));
-		CHECK(stimulus == response);
-		CHECK(!unitUnderTest[i]->peek());
-		CHECK(!unitUnderTest[i]->receive(response));
-	}
+	CHECK(!unitUnderTest->peek());
+	Data stimulus = Data(123, true);
+	CHECK(unitUnderTest->send(stimulus));
+	CHECK(unitUnderTest->peek());
+	Data response;
+	CHECK(unitUnderTest->receive(response));
+	CHECK(stimulus == response);
+	CHECK(!unitUnderTest->peek());
+	CHECK(!unitUnderTest->receive(response));
 }
 
 TEST(ConnectionOfType_TestBench, FullConnection)
 {
-	for (unsigned int i = 0; i < UNITS; i++)
+	// Connection should be empty.
+	CHECK(!unitUnderTest->peek());
+
+	for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE - 1); c++)
 	{
-		// Connection should be empty.
-		CHECK(!unitUnderTest[i]->peek());
-
-		for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE[i] - 1); c++)
-		{
-			Data stimulus = Data(c, true);
-			// Connection should accept another item.
-			CHECK(unitUnderTest[i]->send(stimulus));
-
-			// Connection should not be empty.
-			CHECK(unitUnderTest[i]->peek());
-		}
-
-		Data lastStimulus = Data(CONNECTION_FIFO_SIZE[i], false);
+		Data stimulus = Data(c, true);
 		// Connection should accept another item.
-		CHECK(unitUnderTest[i]->send(lastStimulus));
+		CHECK(unitUnderTest->send(stimulus));
 
 		// Connection should not be empty.
-		CHECK(unitUnderTest[i]->peek());
+		CHECK(unitUnderTest->peek());
+	}
 
-		// Connection shouldn't accept any more items.
-		CHECK(!unitUnderTest[i]->send(lastStimulus));
+	Data lastStimulus = Data(CONNECTION_FIFO_SIZE, false);
+	// Connection should accept another item.
+	CHECK(unitUnderTest->send(lastStimulus));
 
-		Data response;
+	// Connection should not be empty.
+	CHECK(unitUnderTest->peek());
 
-		for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE[i] - 1); c++)
-		{
-			// Should get another item from the Connection.
-			CHECK(unitUnderTest[i]->receive(response));
+	// Connection shouldn't accept any more items.
+	CHECK(!unitUnderTest->send(lastStimulus));
 
-			// Item should be the expected.
-			Data expectedResponse = Data(c, true);
-			CHECK(response == expectedResponse);
+	Data response;
 
-			// Connection should not be empty.
-			CHECK(unitUnderTest[i]->peek());
-		}
-
+	for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE - 1); c++)
+	{
 		// Should get another item from the Connection.
-		CHECK(unitUnderTest[i]->receive(response));
+		CHECK(unitUnderTest->receive(response));
 
 		// Item should be the expected.
-		CHECK(lastStimulus == response);
+		Data expectedResponse = Data(c, true);
+		CHECK(response == expectedResponse);
 
-		// Connection should be empty.
-		CHECK(!unitUnderTest[i]->peek());
-
-		// Shouldn't get another item from the Connection.
-		CHECK(!unitUnderTest[i]->receive(response));
+		// Connection should not be empty.
+		CHECK(unitUnderTest->peek());
 	}
+
+	// Should get another item from the Connection.
+	CHECK(unitUnderTest->receive(response));
+
+	// Item should be the expected.
+	CHECK(lastStimulus == response);
+
+	// Connection should be empty.
+	CHECK(!unitUnderTest->peek());
+
+	// Shouldn't get another item from the Connection.
+	CHECK(!unitUnderTest->receive(response));
 }
 
 static void producer(ConnectionOfType<Data>* _unitUnderTest,
@@ -173,23 +156,20 @@ static void consumer(ConnectionOfType<Data>* _unitUnderTest,
 
 TEST(ConnectionOfType_TestBench, Threadsafe)
 {
-	for (unsigned int i = 0; i < UNITS; i++)
-	{
-		// Connection should be empty.
-		CHECK(!unitUnderTest[i]->peek());
+	// Connection should be empty.
+	CHECK(!unitUnderTest->peek());
 
-		const unsigned long long count = 1000000;
-		bool success = true;
+	const unsigned long long count = 1000000;
+	bool success = true;
 
-		std::thread producerThread(producer, unitUnderTest[i], count);
-		std::thread consumerThread(consumer, unitUnderTest[i], count, &success);
+	std::thread producerThread(producer, unitUnderTest, count);
+	std::thread consumerThread(consumer, unitUnderTest, count, &success);
 
-		producerThread.join();
-		consumerThread.join();
+	producerThread.join();
+	consumerThread.join();
 
-		CHECK(success);
+	CHECK(success);
 
-		// Connection should be empty.
-		CHECK(!unitUnderTest[i]->peek());
-	}
+	// Connection should be empty.
+	CHECK(!unitUnderTest->peek());
 }
