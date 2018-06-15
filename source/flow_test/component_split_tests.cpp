@@ -27,6 +27,8 @@
 
 #include "flow/components.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::OutPort;
 using Flow::InPort;
@@ -50,6 +52,7 @@ TEST_GROUP(Component_Split_TestBench)
 
 		for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 		{
+			inResponse[i] = InPort<char>(&dummy);
 			inResponseConnection[i] = connect(unitUnderTest->out[i],
 					inResponse[i]);
 		}

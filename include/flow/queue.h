@@ -147,6 +147,16 @@ public:
 	}
 
 	/**
+	 * \brief The number of elements in the queue.
+	 */
+	uint16_t elements() const
+	{
+		int32_t delta = static_cast<int32_t>(_enqueued) - static_cast<int32_t>(_dequeued);
+
+		return static_cast<uint16_t>((delta >= 0) ? delta : delta + UINT16_MAX);
+	}
+
+	/**
 	 * \brief Enqueue an element of DataType.
 	 *
 	 * Can be called concurrently with respect to dequeue().

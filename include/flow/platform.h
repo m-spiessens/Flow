@@ -21,38 +21,43 @@
  * SOLUTION.
  */
 
-#include "flow/flow.h"
-#include "flow/platform.h"
-#include "flow/reactor.h"
-#include "flow/utility.h"
+#ifndef FLOW_PLATFORM_H_
+#define FLOW_PLATFORM_H_
 
-void Flow::disconnect(Connection* connection)
+#include <stdint.h>
+#include <signal.h>
+
+/**
+ * \brief Flow is a pipes and filters implementation tailored for
+ * (but not exclusive to) microcontrollers.
+ */
+namespace Flow
 {
-	delete connection;
-}
 
-Flow::Component::Component()
+class Platform
 {
-	Reactor::theOne().add(*this);
-}
+public:
+	/**
+	 * \brief When Flow::Reactor does not find any components that need to be run()
+	 * this function will be executed.
+	 *
+	 * On a ARM Cortex M3 or M4 executing a WFI or WFE assembler instruction might be usefull.
+	 */
+	static void waitForEvent();
 
-void Flow::Component::request()
-{
-	Platform::atomic_fetch_add(&_request, 1);
-}
+	/**
+	 * \brief Atomically increment a value.
+	 *
+	 * When using the GNU C Compiler (gcc) the __atomic_fetch_add intrinsic can be used.
+	 * On a bare metal system without LDREX/STREX instructions the base priority mask
+	 * could be used to prevent interrupts during the read-modify-write.
+	 *
+	 * \param value The value to be incremented.
+	 * \param increment The step of the increment.
+	 */
+	static void atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment);
+};
 
-bool Flow::Component::tryRun()
-{
-	bool ran = false;
+} //namespace Flow
 
-	if(_request != _execute)
-	{
-		run();
-		_execute++;
-		ran = true;
-	}
-
-	return ran;
-}
-
-//uint8_t Flow::Component::increment = 0;
+#endif /* FLOW_PLATFORM_H_ */

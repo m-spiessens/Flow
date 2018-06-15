@@ -24,6 +24,8 @@
 #ifndef FLOW_FLOW_H_
 #define FLOW_FLOW_H_
 
+#include <signal.h>
+
 #include "queue.h"
 
 /**
@@ -41,6 +43,10 @@ class OutPort;
 template<typename Type>
 class InOutPort;
 
+class Component;
+
+class Reactor;
+
 /**
  * \brief A connection between component ports.
  *
@@ -52,6 +58,51 @@ public:
 	virtual ~Connection()
 	{
 	}
+};
+
+/**
+ * \brief A representation of a component.
+ */
+class Component
+{
+public:
+	Component();
+
+	virtual ~Component()
+	{
+	}
+
+	/**
+	 * \brief Request the component to be run by the Flow::Reactor.
+	 *
+	 * This is part of the Flow::Reactor internal infrastructure.
+	 * DO NOT manually call this unless you know what you are doing.
+	 */
+	void request();
+
+	/**
+	 * \brief Let the component execute its functionality.
+	 *
+	 * Typically the component will receive data from its input port(s),
+	 * perform a specific function and send the result(s) to its output port(s).
+	 * DO NOT manually call this function if you are using the Flow::Reactor,
+	 * it will do that for you when needed.
+	 */
+	virtual void run() = 0;
+
+private:
+	volatile sig_atomic_t _request = 0;
+	volatile sig_atomic_t _execute = 0;
+	Component* next = nullptr;
+
+	/**
+	 * \brief Check if a request to run this component was made. If so, run the component.
+	 *
+	 * \return Whether the component was run or not.
+	 */
+	bool tryRun();
+
+	friend class Reactor;
 };
 
 /**
@@ -99,6 +150,7 @@ public:
 	 */
 	bool send(const Type& element)
 	{
+		receiver.request();
 		return this->enqueue(element);
 	}
 
@@ -165,9 +217,19 @@ class InPort
 {
 public:
 	/**
+	 * \brief DO NOT USE.
+	 *
+	 * Would prefer to hide this default constructor but then
+	 * making an array of InPort needs heap and more coding.
+	 * This was deemed the lesser evil.
+	 */
+	InPort<Type>(){}
+
+	/**
 	 * \brief Create an input port.
 	 */
-	InPort<Type>() :
+	explicit InPort<Type>(Component* owner) :
+			owner(owner),
 			connection(nullptr)
 	{
 	}
@@ -217,7 +279,13 @@ public:
 		this->connection = nullptr;
 	}
 
+	void request()
+	{
+		owner->request();
+	}
+
 private:
+	Component* owner = nullptr;
 	ConnectionOfType<Type>* connection = nullptr;
 
 	/**
@@ -236,6 +304,9 @@ template<typename Type>
 class OutPort
 {
 public:
+	/**
+	 * \brief Create an output port.
+	 */
 	OutPort<Type>() :
 			connection(nullptr)
 	{
@@ -297,8 +368,6 @@ private:
 
 /**
  * \brief A bidirectional port of a component.
- *
- * \note Recommendation: use Flow::connect() instead.
  */
 template<typename Type>
 class InOutPort
@@ -306,8 +375,21 @@ class InOutPort
 	public OutPort<Type>
 {
 public:
+	/**
+	 * \brief DO NOT USE.
+	 *
+	 * Would prefer to hide this default constructor but then
+	 * making an array of InPort needs heap and more coding.
+	 * This was deemed the lesser evil.
+	 */
 	InOutPort<Type>()
-	:	InPort<Type>(),
+	{}
+
+	/**
+	 * \brief Create an in-out port.
+	 */
+	explicit InOutPort<Type>(Component* owner)
+	:	InPort<Type>(owner),
 		OutPort<Type>()
 	{}
 };
@@ -346,25 +428,6 @@ Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
 {
 	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
 }
-
-/**
- * \brief A representation of a component.
- */
-class Component
-{
-public:
-	virtual ~Component()
-	{
-	}
-
-	/**
-	 * \brief Let the component execute its functionality.
-	 *
-	 * Typically the component will receive data from its input port(s),
-	 * perform a specific function and send the result(s) to its output port(s).
-	 */
-	virtual void run() = 0;
-};
 
 } //namespace Flow
 

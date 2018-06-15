@@ -36,12 +36,11 @@ using Flow::connect;
 
 TEST_GROUP(Component_UpDownCounter_TestBench)
 {
-	DummyComponent dummy;
 	OutPort<char> outStimulus;
 	Connection* outStimulusConnection;
 	UpDownCounter<char>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<unsigned int> inResponse;
+	InPort<unsigned int> inResponse{&dummy};
 
 	void setup()
 	{

@@ -27,6 +27,8 @@
 
 #include "flow/components.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::OutPort;
 using Flow::InPort;
@@ -38,7 +40,7 @@ TEST_GROUP(Component_Counter_TestBench)
 	Connection* outStimulusConnection;
 	Counter<char>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<unsigned int> inResponse;
+	InPort<unsigned int> inResponse{&dummy};
 
 	void setup()
 	{

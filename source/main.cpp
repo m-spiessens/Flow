@@ -22,7 +22,10 @@
  */
 
 #include "CppUTest/CommandLineTestRunner.h"
+
 #include "flow/utility.h"
+
+#include "flow_test/data.h"
 
 int main(void)
 {
@@ -33,3 +36,5 @@ int main(void)
 
 	return 0;
 }
+
+DummyComponent dummy;

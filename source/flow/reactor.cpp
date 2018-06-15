@@ -21,38 +21,49 @@
  * SOLUTION.
  */
 
-#include "flow/flow.h"
 #include "flow/platform.h"
 #include "flow/reactor.h"
-#include "flow/utility.h"
 
-void Flow::disconnect(Connection* connection)
+Flow::Reactor& Flow::Reactor::theOne()
 {
-	delete connection;
+	static Reactor me;
+	return me;
 }
 
-Flow::Component::Component()
+void Flow::Reactor::add(Component& component)
 {
-	Reactor::theOne().add(*this);
-}
-
-void Flow::Component::request()
-{
-	Platform::atomic_fetch_add(&_request, 1);
-}
-
-bool Flow::Component::tryRun()
-{
-	bool ran = false;
-
-	if(_request != _execute)
+	if(first == nullptr && last == nullptr)
 	{
-		run();
-		_execute++;
-		ran = true;
+		first = &component;
+		last = &component;
+	}
+	else
+	{
+		last->next = &component;
+		last = &component;
+	}
+}
+
+void Flow::Reactor::run()
+{
+	bool ranSomething = false;
+	Component* current = first;
+	while(current != nullptr)
+	{
+		if(current->tryRun())
+		{
+			ranSomething = true;
+		}
+
+		current = current->next;
 	}
 
-	return ran;
+	if(!ranSomething)
+	{
+		Platform::waitForEvent();
+	}
 }
 
-//uint8_t Flow::Component::increment = 0;
+Flow::Reactor::Reactor()
+{
+}

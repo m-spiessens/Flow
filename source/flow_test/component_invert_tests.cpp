@@ -27,6 +27,8 @@
 
 #include "flow/components.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::OutPort;
 using Flow::InPort;
@@ -38,7 +40,7 @@ TEST_GROUP(Component_Invert_TestBench)
 	Connection* outStimulusConnection;
 	Invert<bool>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<bool> inResponse;
+	InPort<bool> inResponse{&dummy};
 
 	void setup()
 	{

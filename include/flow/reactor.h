@@ -21,60 +21,56 @@
  * SOLUTION.
  */
 
-#ifndef DATA_H_
-#define DATA_H_
+#ifndef FLOW_REACTOR_H_
+#define FLOW_REACTOR_H_
 
-#include <stdint.h>
+#include "flow.h"
 
-#include "flow/flow.h"
+/**
+ * \brief Flow is a pipes and filters implementation tailored for
+ * (but not exclusive to) microcontrollers.
+ */
+namespace Flow
+{
 
-class Data
+class Reactor
 {
 public:
-	Data() :
-			integer(0), boolean(false)
-	{
-	}
+	/**
+	 * \brief Get the singleton instance.
+	 *
+	 * Yes, a singleton is actually useful here.
+	 *
+	 * \return The singleton instance.
+	 */
+	static Reactor& theOne();
 
-	Data(uint64_t i, bool b) :
-			integer(i), boolean(b)
-	{
-	}
+	/**
+	 * \brief Add a component to the Flow::Reactor for potential running when needed.
+	 *
+	 * DO NOT call this function manually unless you know what you're doing.
+	 * A Flow::Component will automatically be added to the Flow::Reactor on creation.
+	 *
+	 * \param component The component that will be taken care of.
+	 */
+	void add(Component& component);
 
-	bool operator==(const Data& other) const
-	{
-		bool equal = true;
-		equal = equal && (this->integer == other.integer);
-		equal = equal && (this->boolean == other.boolean);
-		return equal;
-	}
-
-	bool operator!=(const Data& other) const
-	{
-		return !(*this == other);
-	}
-
-	bool operator<(const Data& other) const
-	{
-		return this->integer < other.integer;
-	}
-
-	bool operator>=(const Data& other) const
-	{
-		return !(*this < other);
-	}
+	/**
+	 * \brief Let the Flow::Reactor do its job.
+	 *
+	 * Putting this in a while(true) in the main() is a typical scenario on a microcontroller.
+	 * If the Flow::Reactor does not find any component that need to be run it will call the
+	 * Flow::Platform::waitForEvent() function.
+	 */
+	void run();
 
 private:
-	uint64_t integer;
-	bool boolean;
+	Reactor();
+
+	Component* first = nullptr;
+	Component* last = nullptr;
 };
 
-class DummyComponent : public Flow::Component
-{
-public:
-	void run(){}
-};
+} //namespace Flow
 
-extern DummyComponent dummy;
-
-#endif // DATA_H_
+#endif /* FLOW_REACTOR_H_ */

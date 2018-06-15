@@ -7,6 +7,35 @@
 
 Flow is a pipes and filters implementation tailored for (but not exclusive to) microcontrollers. It provides 3 concepts: component, port and connection.
 
+## Reactive
+
+Systems using microcontrollers are typically reactive systems, they respond to events.
+That is were the Flow::Reactor comes in to play.
+The idea is to define a reaction to an event by making a pipeline of multiple Flow::Component.
+The head (first Flow::Component) of the pipeline will run in interrupt context (an event).
+The head sends data to the second component in the pipeline over a (concurrency safe) Flow::Connection.
+Which will schedule the second component to be run by the Flow::Reactor when possible.
+All components except for the head will be handled by the Flow::Reactor and be executed in main() context, keeping the interrupt service routines short.
+
+After the complete pipeline was run and no other events need to be serviced, the Flow::Reactor will execute the Flow::Platform::waitForEvent() function.
+The implementation of this function can be freely defined.
+On low power Cortex M3 or M4 based system the WFI (wait for interrupt) instruction can be executed.
+Depending on the configuration the microcontroller will go into sleep mode untill it is woken up by the next event (interrupt) to which it will respond.
+
+### Conclusion
+
+Given that all pipelines are triggered by events (head component in interrupt service routine), the Flow::Reactor provides a convenient mechanism to build a low power enabled, reactive system.
+
+### Scheduling
+
+The Flow::Reactor is a cooperative scheduler. Except for the head component of a pipeline, which runs in interrupt context, there is no preemption.
+
+The current scheduling strategy is a simple round robin. 
+
+Priority could be introduced by changing the Flow::Reactor::run() implementation. After finding a Flow::Component that had to be run (and running it) the reactor continues in the list. If the reactor would start from the start of the list after running a component, the order in which Flow::Components are created will define their priority for scheduling. This way different data paths could have different priorities. 
+
+A few different strategies might be a future extension.
+
 ## Concepts
 
 ### Component

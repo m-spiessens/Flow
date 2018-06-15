@@ -27,6 +27,8 @@
 
 #include "flow/components.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::OutPort;
 using Flow::InPort;
@@ -40,7 +42,7 @@ TEST_GROUP(Component_Combine_TestBench)
 	Connection* outStimulusConnection[COMBINE_COUNT];
 	Combine<char, COMBINE_COUNT>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<char> inResponse;
+	InPort<char> inResponse{&dummy};
 
 	void setup()
 	{

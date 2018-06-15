@@ -21,38 +21,14 @@
  * SOLUTION.
  */
 
-#include "flow/flow.h"
 #include "flow/platform.h"
-#include "flow/reactor.h"
-#include "flow/utility.h"
 
-void Flow::disconnect(Connection* connection)
+void Flow::Platform::waitForEvent()
 {
-	delete connection;
+	__asm("wfi");
 }
 
-Flow::Component::Component()
+void Flow::Platform::atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment)
 {
-	Reactor::theOne().add(*this);
+	__atomic_fetch_add(value, increment, __ATOMIC_RELAXED);
 }
-
-void Flow::Component::request()
-{
-	Platform::atomic_fetch_add(&_request, 1);
-}
-
-bool Flow::Component::tryRun()
-{
-	bool ran = false;
-
-	if(_request != _execute)
-	{
-		run();
-		_execute++;
-		ran = true;
-	}
-
-	return ran;
-}
-
-//uint8_t Flow::Component::increment = 0;

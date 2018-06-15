@@ -87,6 +87,7 @@ TEST(Queue_TestBench, EnqueueDequeueItem)
 		CHECK(unitUnderTest[i]->enqueue(stimulus));
 		CHECK(!unitUnderTest[i]->isEmpty());
 		Data response = Data();
+		CHECK(unitUnderTest[i]->elements() == 1)
 		CHECK(unitUnderTest[i]->peek(response));
 		CHECK(stimulus == response);
 		response = Data();
@@ -129,6 +130,8 @@ TEST(Queue_TestBench, FullQueue)
 
 		// Queue shouldn't accept any more items.
 		CHECK(!unitUnderTest[i]->enqueue(lastStimulus));
+
+		CHECK(unitUnderTest[i]->elements() == QUEUE_SIZE[i]);
 
 		Data response;
 

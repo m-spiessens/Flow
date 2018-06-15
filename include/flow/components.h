@@ -35,7 +35,7 @@ template<typename Type>
 class Invert: public Flow::Component
 {
 public:
-	Flow::InPort<Type> in;
+	Flow::InPort<Type> in{this};
 	Flow::OutPort<Type> out;
 
 	void run() final override
@@ -57,7 +57,7 @@ template<typename From, typename To>
 class Convert: public Flow::Component
 {
 public:
-	Flow::InPort<From> inFrom;
+	Flow::InPort<From> inFrom{this};
 	Flow::OutPort<To> outTo;
 
 	void run() final override
@@ -80,7 +80,7 @@ template<typename Type>
 class Counter: public Flow::Component
 {
 public:
-	Flow::InPort<Type> in;
+	Flow::InPort<Type> in{this};
 	Flow::OutPort<uint32_t> out;
 
 	/**
@@ -124,7 +124,7 @@ template<typename Type>
 class UpDownCounter: public Flow::Component
 {
 public:
-	Flow::InPort<Type> in;
+	Flow::InPort<Type> in{this};
 	Flow::OutPort<uint32_t> out;
 
 	explicit UpDownCounter(uint32_t downLimit, uint32_t upLimit,
@@ -180,7 +180,7 @@ template<typename Type, uint8_t outputs>
 class Split: public Flow::Component
 {
 public:
-	Flow::InPort<Type> in;
+	Flow::InPort<Type> in{this};
 	Flow::OutPort<Type> out[outputs];
 
 	void run() final override
@@ -203,12 +203,20 @@ public:
  * All input ports are handled in depth-first semantic:
  * all values of a input port will be processed before going to the next input port.
  */
-template<typename Type, uint8_t inputs>
+template<typename Type, uint_fast8_t inputs>
 class Combine: public Flow::Component
 {
 public:
 	Flow::InPort<Type> in[inputs];
 	Flow::OutPort<Type> out;
+
+	Combine()
+	{
+		for (uint_fast8_t i = 0; i < inputs; i++)
+		{
+			in[i] = Flow::InPort<Type>(this);
+		}
+	}
 
 	void run() final override
 	{
@@ -252,7 +260,7 @@ private:
 class Toggle: public Flow::Component
 {
 public:
-	Flow::InPort<Tick> tick;
+	Flow::InPort<Tick> tick{this};
 	Flow::OutPort<bool> out;
 
 	void run() final override;

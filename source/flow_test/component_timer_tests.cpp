@@ -27,6 +27,8 @@
 
 #include "flow/components.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::OutPort;
 using Flow::InPort;
@@ -36,7 +38,7 @@ TEST_GROUP(Component_Timer_TestBench)
 {
 	Timer* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<Tick> inResponse;
+	InPort<Tick> inResponse{&dummy};
 
 	void setup()
 	{

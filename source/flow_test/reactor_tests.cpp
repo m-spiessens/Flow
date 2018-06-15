@@ -22,64 +22,59 @@
  */
 
 #include <stdint.h>
+#include <thread>
 
 #include "CppUTest/TestHarness.h"
 
 #include "flow/components.h"
+#include "flow/reactor.h"
+#include "flow/utility.h"
 
 #include "flow_test/data.h"
 
-using Flow::Connection;
-using Flow::OutPort;
-using Flow::InPort;
-using Flow::connect;
-
-TEST_GROUP(Component_Convert_TestBench)
+TEST_GROUP(Reactor_TestBench)
 {
-	OutPort<float> outStimulus;
-	Connection* outStimulusConnection;
-	Convert<float, int32_t>* unitUnderTest;
-	Connection* inResponseConnection;
-	InPort<int32_t> inResponse{&dummy};
+	Flow::Connection* connection[2];
+	Timer timer{1};
+	Counter<Tick> counter{UINT32_MAX};
+
+#define COUNT 1000llu
+
+	Flow::InPort<uint32_t> inCount{&dummy};
 
 	void setup()
 	{
-		unitUnderTest = new Convert<float, int32_t>();
-
-		outStimulusConnection = connect(outStimulus, unitUnderTest->inFrom);
-		inResponseConnection = connect(unitUnderTest->outTo, inResponse);
+		connection[0] = Flow::connect(timer.outTick, counter.in, COUNT);
+		connection[1] = Flow::connect(counter.out, inCount, COUNT);
 	}
 
 	void teardown()
 	{
-		disconnect(outStimulusConnection);
-		disconnect(inResponseConnection);
-
-		delete unitUnderTest;
+		for (unsigned int i = 0; i < ArraySizeOf(connection); i++)
+		{
+			delete connection[i];
+		}
 	}
 };
 
-TEST(Component_Convert_TestBench, Convert)
+static void producer(Flow::Component* timer, uint64_t count)
 {
-	CHECK(!inResponse.peek());
+	for (unsigned long long c = 0; c <= count; c++)
+	{
+		timer->run();
+	}
+}
 
-	unitUnderTest->run();
+TEST(Reactor_TestBench, React)
+{
+	std::thread producerThread(producer, &timer, COUNT);
 
-	CHECK(!inResponse.peek());
+	uint32_t finalCount = 0;
+	do
+	{
+		Flow::Reactor::theOne().run();
+		inCount.receive(finalCount);
+	} while(finalCount < COUNT);
 
-	CHECK(outStimulus.send(1.0f));
-
-	unitUnderTest->run();
-
-	int32_t result = 0;
-	CHECK(inResponse.receive(result));
-	CHECK(result == 1);
-
-	CHECK(outStimulus.send(-1.0f));
-
-	unitUnderTest->run();
-
-	result = 0;
-	CHECK(inResponse.receive(result));
-	CHECK(result == -1);
+	producerThread.join();
 }
