@@ -23,6 +23,11 @@
 
 #include "flow/platform.h"
 
+void Flow::Platform::configure()
+{
+	// Not needed for unit tests.
+}
+
 void Flow::Platform::waitForEvent()
 {
 	// Not needed for unit tests.

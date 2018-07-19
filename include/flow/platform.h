@@ -38,10 +38,15 @@ class Platform
 {
 public:
 	/**
+	 * \brief Platform specific configuration that might be needed for the implementation of waitForEvent().
+	 */
+	static void configure();
+
+	/**
 	 * \brief When Flow::Reactor does not find any components that need to be run()
 	 * this function will be executed.
 	 *
-	 * On a ARM Cortex M3 or M4 executing a WFI or WFE assembler instruction might be usefull.
+	 * On a ARM Cortex M3 or M4 executing a WFI or WFE assembler instruction might be useful.
 	 */
 	static void waitForEvent();
 

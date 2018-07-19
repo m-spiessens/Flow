@@ -72,4 +72,5 @@ void Flow::Reactor::reset()
 
 Flow::Reactor::Reactor()
 {
+	Platform::configure();
 }

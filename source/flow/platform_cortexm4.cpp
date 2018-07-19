@@ -23,9 +23,17 @@
 
 #include "flow/platform.h"
 
+#define SCR *(uint32_t*)0xE000ED10
+#define SEVONPEND (1 << 4)
+
+void Flow::Platform::configure()
+{
+	SCR |= SEVONPEND;
+}
+
 void Flow::Platform::waitForEvent()
 {
-	__asm("wfi");
+	__asm("wfe");
 }
 
 void Flow::Platform::atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment)

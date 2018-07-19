@@ -279,11 +279,34 @@ public:
 		this->connection = nullptr;
 	}
 
+	/**
+	 * \brief DO NOT USE.
+	 *
+	 * Used by the Flow::Reactor, it should not be used manually.
+	 */
 	void request()
 	{
 		if(owner != nullptr)
 		{
 			owner->request();
+		}
+	}
+
+	/**
+	 * \brief Check if the connection is full.
+	 *
+	 * \return True when the connection is full.
+	 * False when the connection is not full or the port is not connected.
+	 */
+	bool full() const
+	{
+		if(connection != nullptr)
+		{
+			return connection->full();
+		}
+		else
+		{
+			return false;
 		}
 	}
 
