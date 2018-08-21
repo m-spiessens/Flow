@@ -40,11 +40,14 @@ const static unsigned int CONNECTION_FIFO_SIZE = 10;
 TEST_GROUP(Port_TestBench)
 {
 	Connection* connection;
-	OutPort<Data> outUnitUnderTest;
-	InPort<Data> inUnitUnderTest;
+	OutPort<Data>* outUnitUnderTest;
+	InPort<Data>* inUnitUnderTest;
 
 	void setup()
 	{
+		outUnitUnderTest = new OutPort<Data>;
+		inUnitUnderTest = new InPort<Data>{&dummyComponent};
+		CHECK(!inUnitUnderTest->full());
 		connection = connect(outUnitUnderTest, inUnitUnderTest,
 				CONNECTION_FIFO_SIZE);
 	}
@@ -52,85 +55,89 @@ TEST_GROUP(Port_TestBench)
 	void teardown()
 	{
 		disconnect(connection);
+		delete inUnitUnderTest;
+		delete outUnitUnderTest;
 	}
 };
 
 TEST(Port_TestBench, IsEmptyAfterCreation)
 {
-	CHECK(!inUnitUnderTest.peek());
+	CHECK(!inUnitUnderTest->peek());
 	Data response;
-	CHECK(!inUnitUnderTest.receive(response));
-	CHECK(!outUnitUnderTest.full());
+	CHECK(!inUnitUnderTest->receive(response));
+	CHECK(!outUnitUnderTest->full());
 }
 
 TEST(Port_TestBench, SendReceiveItem)
 {
-	CHECK(!inUnitUnderTest.peek());
+	CHECK(!inUnitUnderTest->peek());
 	Data stimulus = Data(123, true);
-	CHECK(outUnitUnderTest.send(stimulus));
-	CHECK(inUnitUnderTest.peek());
+	CHECK(outUnitUnderTest->send(stimulus));
+	CHECK(inUnitUnderTest->peek());
 	Data response;
-	CHECK(inUnitUnderTest.receive(response));
+	CHECK(inUnitUnderTest->receive(response));
 	CHECK(stimulus == response);
-	CHECK(!inUnitUnderTest.peek());
-	CHECK(!inUnitUnderTest.receive(response));
+	CHECK(!inUnitUnderTest->peek());
+	CHECK(!inUnitUnderTest->receive(response));
 }
 
 TEST(Port_TestBench, FullConnection)
 {
 	// Port should be empty.
-	CHECK(!inUnitUnderTest.peek());
+	CHECK(!inUnitUnderTest->peek());
 
 	for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE - 1); c++)
 	{
 		Data stimulus = Data(c, true);
 
 		// Port should accept another item.
-		CHECK(outUnitUnderTest.send(stimulus));
+		CHECK(outUnitUnderTest->send(stimulus));
 
 		// Port should not be empty.
-		CHECK(inUnitUnderTest.peek());
+		CHECK(inUnitUnderTest->peek());
 	}
 
 	Data lastStimulus = Data(CONNECTION_FIFO_SIZE, false);
+	CHECK(!inUnitUnderTest->full());
 	// Port should accept another item.
-	CHECK(outUnitUnderTest.send(lastStimulus));
+	CHECK(outUnitUnderTest->send(lastStimulus));
 
 	// Port should not be empty.
-	CHECK(inUnitUnderTest.peek());
-	CHECK(outUnitUnderTest.full());
+	CHECK(inUnitUnderTest->peek());
+	CHECK(inUnitUnderTest->full());
+	CHECK(outUnitUnderTest->full());
 
 	// Port shouldn't accept any more items.
-	CHECK(!outUnitUnderTest.send(lastStimulus));
+	CHECK(!outUnitUnderTest->send(lastStimulus));
 
 	Data response;
 
 	for (unsigned int c = 0; c < (CONNECTION_FIFO_SIZE - 1); c++)
 	{
 		// Should get another item from the Port.
-		CHECK(inUnitUnderTest.receive(response));
+		CHECK(inUnitUnderTest->receive(response));
 
 		// Item should be the expected.
 		Data expectedResponse = Data(c, true);
 		CHECK(response == expectedResponse);
 
 		// Port should not be empty.
-		CHECK(inUnitUnderTest.peek());
-		CHECK(!outUnitUnderTest.full());
+		CHECK(inUnitUnderTest->peek());
+		CHECK(!outUnitUnderTest->full());
 	}
 
 	// Should get another item from the Port.
-	CHECK(inUnitUnderTest.receive(response));
+	CHECK(inUnitUnderTest->receive(response));
 
 	// Item should be the expected.
 	CHECK(lastStimulus == response);
 
 	// Port should be empty.
-	CHECK(!inUnitUnderTest.peek());
-	CHECK(!outUnitUnderTest.full());
+	CHECK(!inUnitUnderTest->peek());
+	CHECK(!outUnitUnderTest->full());
 
 	// Shouldn't get another item from the Port.
-	CHECK(!inUnitUnderTest.receive(response));
+	CHECK(!inUnitUnderTest->receive(response));
 }
 
 static void producer(OutPort<Data>* _unitUnderTest,
@@ -165,8 +172,8 @@ TEST(Port_TestBench, Threadsafe)
 	const unsigned long long count = 1000000;
 	bool success = true;
 
-	std::thread producerThread(producer, &outUnitUnderTest, count);
-	std::thread consumerThread(consumer, &inUnitUnderTest, count, &success);
+	std::thread producerThread(producer, outUnitUnderTest, count);
+	std::thread consumerThread(consumer, inUnitUnderTest, count, &success);
 
 	producerThread.join();
 	consumerThread.join();

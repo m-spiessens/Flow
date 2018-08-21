@@ -37,14 +37,15 @@ using Flow::connect;
 
 TEST_GROUP(Component_Toggle_TestBench)
 {
-	OutPort<Tick> outStimulus;
+	OutPort<Tick>* outStimulus;
 	Connection* outStimulusConnection;
 	Toggle* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<bool> inResponse;
+	InPort<bool> inResponse{&dummyComponent};
 
 	void setup()
 	{
+		outStimulus = new OutPort<Tick>;
 		unitUnderTest = new Toggle();
 
 		outStimulusConnection = connect(outStimulus, unitUnderTest->tick);
@@ -57,6 +58,7 @@ TEST_GROUP(Component_Toggle_TestBench)
 		disconnect(inResponseConnection);
 
 		delete unitUnderTest;
+		delete outStimulus;
 
 		Flow::Reactor::theOne().reset();
 	}
@@ -73,7 +75,7 @@ TEST(Component_Toggle_TestBench, DormantWithoutStimulus)
 
 TEST(Component_Toggle_TestBench, Toggle)
 {
-	CHECK(outStimulus.send(TICK));
+	CHECK(outStimulus->send(TICK));
 
 	CHECK(!inResponse.peek());
 
@@ -90,7 +92,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	CHECK(!inResponse.peek());
 
-	CHECK(outStimulus.send(TICK));
+	CHECK(outStimulus->send(TICK));
 
 	unitUnderTest->run();
 
@@ -106,7 +108,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	CHECK(!inResponse.peek());
 
-	CHECK(outStimulus.send(TICK));
+	CHECK(outStimulus->send(TICK));
 
 	unitUnderTest->run();
 
@@ -117,7 +119,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	previousResponse = currentResponse;
 
-	CHECK(outStimulus.send(TICK));
+	CHECK(outStimulus->send(TICK));
 
 	unitUnderTest->run();
 
@@ -128,7 +130,7 @@ TEST(Component_Toggle_TestBench, Toggle)
 
 	previousResponse = currentResponse;
 
-	CHECK(outStimulus.send(TICK));
+	CHECK(outStimulus->send(TICK));
 
 	unitUnderTest->run();
 

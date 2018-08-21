@@ -207,14 +207,22 @@ template<typename Type, uint_fast8_t inputs>
 class Combine: public Flow::Component
 {
 public:
-	Flow::InPort<Type> in[inputs];
+	Flow::InPort<Type>* in[inputs];
 	Flow::OutPort<Type> out;
 
 	Combine()
 	{
 		for (uint_fast8_t i = 0; i < inputs; i++)
 		{
-			in[i] = Flow::InPort<Type>(this);
+			in[i] = new Flow::InPort<Type>(this);
+		}
+	}
+
+	~Combine()
+	{
+		for (uint_fast8_t i = 0; i < inputs; i++)
+		{
+			delete in[i];
 		}
 	}
 
@@ -223,7 +231,7 @@ public:
 		for (uint_fast8_t i = 0; i < inputs; i++)
 		{
 			Type b;
-			while (in[i].receive(b))
+			while (in[i]->receive(b))
 			{
 				out.send(b);
 			}

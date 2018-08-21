@@ -38,19 +38,53 @@ const static unsigned int CONNECTION_FIFO_SIZE = 10;
 
 TEST_GROUP(InOutPort_TestBench)
 {
-	Connection* connection;
-	InOutPort<Data> unitUnderTestA;
-	InOutPort<Data> unitUnderTestB;
+	InOutPort<Data> unitUnderTestA{&dummyComponent};
+	InOutPort<Data> unitUnderTestB{&dummyComponent};
+	Connection* connectionAB;
+
+	InOutPort<Data>* unitUnderTestC;
+	InOutPort<Data> unitUnderTestD{&dummyComponent};
+	Connection* connectionCD;
+
+	InOutPort<Data> unitUnderTestE{&dummyComponent};
+	InOutPort<Data>* unitUnderTestF;
+	Connection* connectionEF;
+
+	InOutPort<Data>* unitUnderTestG;
+	InOutPort<Data>* unitUnderTestH;
+	Connection* connectionGH;
 
 	void setup()
 	{
-		connection = connect(unitUnderTestA, unitUnderTestB,
+		unitUnderTestC = new InOutPort<Data>{&dummyComponent};
+		unitUnderTestF = new InOutPort<Data>{&dummyComponent};
+		unitUnderTestG = new InOutPort<Data>{&dummyComponent};
+		unitUnderTestH = new InOutPort<Data>{&dummyComponent};
+
+		connectionAB = connect(unitUnderTestA, unitUnderTestB,
 				CONNECTION_FIFO_SIZE);
+
+		connectionCD = connect(unitUnderTestC, unitUnderTestD,
+				CONNECTION_FIFO_SIZE);
+
+		connectionEF = connect(unitUnderTestE, unitUnderTestF,
+				CONNECTION_FIFO_SIZE);
+
+		connectionGH = connect(unitUnderTestG, unitUnderTestH,
+				CONNECTION_FIFO_SIZE);
+
+		delete unitUnderTestC;
+		delete unitUnderTestF;
+		delete unitUnderTestG;
+		delete unitUnderTestH;
 	}
 
 	void teardown()
 	{
-		disconnect(connection);
+		disconnect(connectionAB);
+		disconnect(connectionCD);
+		disconnect(connectionEF);
+		disconnect(connectionGH);
 	}
 };
 

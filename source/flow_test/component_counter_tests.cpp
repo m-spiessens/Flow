@@ -41,7 +41,7 @@ TEST_GROUP(Component_Counter_TestBench)
 	Connection* outStimulusConnection;
 	Counter<char>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<unsigned int> inResponse;
+	InPort<unsigned int> inResponse{&dummyComponent};
 
 	void setup()
 	{

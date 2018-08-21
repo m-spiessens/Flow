@@ -40,7 +40,7 @@ TEST_GROUP(ConnectionOfType_TestBench)
 {
 	ConnectionOfType<Data>* unitUnderTest;
 	OutPort<Data> sender;
-	InPort<Data> receiver;
+	InPort<Data> receiver{&dummyComponent};
 
 	void setup()
 	{

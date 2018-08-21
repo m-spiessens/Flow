@@ -24,6 +24,7 @@
 #ifndef FLOW_FLOW_H_
 #define FLOW_FLOW_H_
 
+#include <assert.h>
 #include <signal.h>
 
 #include "queue.h"
@@ -217,15 +218,6 @@ class InPort
 {
 public:
 	/**
-	 * \brief DO NOT USE.
-	 *
-	 * Would prefer to hide this default constructor but then
-	 * making an array of InPort needs heap and more coding.
-	 * This was deemed the lesser evil.
-	 */
-	InPort<Type>(){}
-
-	/**
 	 * \brief Create an input port.
 	 */
 	explicit InPort<Type>(Component* owner) :
@@ -402,16 +394,6 @@ class InOutPort
 {
 public:
 	/**
-	 * \brief DO NOT USE.
-	 *
-	 * Would prefer to hide this default constructor but then
-	 * making an array of InPort needs heap and more coding.
-	 * This was deemed the lesser evil.
-	 */
-	InOutPort<Type>()
-	{}
-
-	/**
 	 * \brief Create an in-out port.
 	 */
 	explicit InOutPort<Type>(Component* owner)
@@ -442,6 +424,55 @@ Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 }
 
 /**
+ * \brief Connect an output port to an input port.
+ *
+ * \param sender The output port to be connected.
+ * \param receiver The input port to be connected.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(OutPort<Type>* sender, InPort<Type>& receiver,
+		uint16_t size = 1)
+{
+	assert(sender != nullptr);
+
+	return new ConnectionOfType<Type>(*sender, receiver, size);
+}
+
+/**
+ * \brief Connect an output port to an input port.
+ *
+ * \param sender The output port to be connected.
+ * \param receiver The input port to be connected.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(OutPort<Type>& sender, InPort<Type>* receiver,
+		uint16_t size = 1)
+{
+	assert(receiver != nullptr);
+
+	return new ConnectionOfType<Type>(sender, *receiver, size);
+}
+
+/**
+ * \brief Connect an output port to an input port.
+ *
+ * \param sender The output port to be connected.
+ * \param receiver The input port to be connected.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(OutPort<Type>* sender, InPort<Type>* receiver,
+		uint16_t size = 1)
+{
+	assert(sender != nullptr);
+	assert(receiver != nullptr);
+
+	return new ConnectionOfType<Type>(*sender, *receiver, size);
+}
+
+/**
  * \brief Connect two bidirectional ports.
  *
  * \param portA One of the bidirectional ports.
@@ -453,6 +484,55 @@ Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
 		uint16_t size = 1)
 {
 	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
+}
+
+/**
+ * \brief Connect two bidirectional ports.
+ *
+ * \param portA One of the bidirectional ports.
+ * \param portB The other of the bidirectional ports.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(InOutPort<Type>* portA, InOutPort<Type>& portB,
+		uint16_t size = 1)
+{
+	assert(portA != nullptr);
+
+	return new BiDirectionalConnectionOfType<Type>(*portA, portB, size);
+}
+
+/**
+ * \brief Connect two bidirectional ports.
+ *
+ * \param portA One of the bidirectional ports.
+ * \param portB The other of the bidirectional ports.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(InOutPort<Type>& portA, InOutPort<Type>* portB,
+		uint16_t size = 1)
+{
+	assert(portB != nullptr);
+
+	return new BiDirectionalConnectionOfType<Type>(portA, *portB, size);
+}
+
+/**
+ * \brief Connect two bidirectional ports.
+ *
+ * \param portA One of the bidirectional ports.
+ * \param portB The other of the bidirectional ports.
+ * \param size The amount of elements the connection can buffer.
+ */
+template<typename Type>
+Connection* connect(InOutPort<Type>* portA, InOutPort<Type>* portB,
+		uint16_t size = 1)
+{
+	assert(portA != nullptr);
+	assert(portB != nullptr);
+
+	return new BiDirectionalConnectionOfType<Type>(*portA, *portB, size);
 }
 
 } //namespace Flow

@@ -43,7 +43,7 @@ TEST_GROUP(Component_Split_TestBench)
 	Connection* outStimulusConnection;
 	Split<char, SPLIT_COUNT>* unitUnderTest;
 	Connection* inResponseConnection[SPLIT_COUNT];
-	InPort<char> inResponse[SPLIT_COUNT];
+	InPort<char>* inResponse[SPLIT_COUNT];
 
 	void setup()
 	{
@@ -53,6 +53,7 @@ TEST_GROUP(Component_Split_TestBench)
 
 		for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 		{
+			inResponse[i] = new InPort<char>{&dummyComponent};
 			inResponseConnection[i] = connect(unitUnderTest->out[i],
 					inResponse[i]);
 		}
@@ -65,6 +66,7 @@ TEST_GROUP(Component_Split_TestBench)
 		for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 		{
 			delete inResponseConnection[i];
+			delete inResponse[i];
 		}
 
 		delete unitUnderTest;
@@ -77,14 +79,14 @@ TEST(Component_Split_TestBench, DormantWithoutStimulus)
 {
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(!inResponse[i].peek());
+		CHECK(!inResponse[i]->peek());
 	}
 
 	unitUnderTest->run();
 
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(!inResponse[i].peek());
+		CHECK(!inResponse[i]->peek());
 	}
 }
 
@@ -94,7 +96,7 @@ TEST(Component_Split_TestBench, Split)
 
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(!inResponse[i].peek());
+		CHECK(!inResponse[i]->peek());
 	}
 
 	unitUnderTest->run();
@@ -102,7 +104,7 @@ TEST(Component_Split_TestBench, Split)
 	char response = 0;
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(inResponse[i].receive(response));
+		CHECK(inResponse[i]->receive(response));
 
 		char expected = 1;
 		CHECK(response == expected);
@@ -112,7 +114,7 @@ TEST(Component_Split_TestBench, Split)
 
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(!inResponse[i].receive(response));
+		CHECK(!inResponse[i]->receive(response));
 	}
 
 	CHECK(outStimulus.send(123));
@@ -121,7 +123,7 @@ TEST(Component_Split_TestBench, Split)
 
 	for (unsigned int i = 0; i < SPLIT_COUNT; i++)
 	{
-		CHECK(inResponse[i].receive(response));
+		CHECK(inResponse[i]->receive(response));
 
 		char expected = 123;
 		CHECK(response == expected);

@@ -41,7 +41,7 @@ TEST_GROUP(Component_UpDownCounter_TestBench)
 	Connection* outStimulusConnection;
 	UpDownCounter<char>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<unsigned int> inResponse;
+	InPort<unsigned int> inResponse{&dummyComponent};
 
 	void setup()
 	{
