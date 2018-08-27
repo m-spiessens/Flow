@@ -71,7 +71,7 @@ TEST_GROUP(Component_Split_TestBench)
 
 		delete unitUnderTest;
 
-		Flow::Reactor::theOne().reset();
+		Flow::Reactor::reset();
 	}
 };
 

@@ -77,19 +77,42 @@ public:
 	 * \brief Request the component to be run by the Flow::Reactor.
 	 *
 	 * This is part of the Flow::Reactor internal infrastructure.
-	 * DO NOT manually call this unless you know what you are doing.
+	 *
+	 * \remark DO NOT manually call this unless you know what you are doing.
 	 */
 	void request();
 
-	/**
-	 * \brief Let the component execute its functionality.
-	 *
-	 * Typically the component will receive data from its input port(s),
-	 * perform a specific function and send the result(s) to its output port(s).
-	 * DO NOT manually call this function if you are using the Flow::Reactor,
-	 * it will do that for you when needed.
-	 */
-	virtual void run() = 0;
+    /**
+     * \brief Perform second stage initialization of the component.
+     *
+     * Initialization which cannot be implemented in the constructor (timing wise)
+     * should be implemented here.
+     *
+     * \remark DO NOT manually call this function if you are using the Flow::Reactor.
+     * Calling Flow::Reactor::start() will execute this for all Flow::Component
+     * of the application.
+     */
+    virtual void start(){}
+
+    /**
+     * \brief Symmetrical deinitialization, see start().
+     *
+     * \remark DO NOT manually call this function if you are using the Flow::Reactor.
+     * Calling Flow::Reactor::stop() will execute this for all Flow::Component
+     * of the application.
+     */
+    virtual void stop(){}
+
+    /**
+     * \brief Let the component execute its functionality.
+     *
+     * Typically the component will receive data from its input port(s),
+     * perform a specific function and send the result(s) to its output port(s).
+     *
+     * \remark DO NOT manually call this function if you are using the Flow::Reactor,
+     * it will do that for you when needed.
+     */
+    virtual void run() = 0;
 
 private:
 	volatile sig_atomic_t _request = 0;
@@ -258,6 +281,7 @@ public:
 	 */
 	void connect(ConnectionOfType<Type>* connection)
 	{
+		assert(!isConnected());
 		this->connection = connection;
 	}
 
@@ -362,6 +386,7 @@ public:
 	 */
 	void connect(ConnectionOfType<Type>* connection)
 	{
+		assert(!isConnected());
 		this->connection = connection;
 	}
 

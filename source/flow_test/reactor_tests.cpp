@@ -55,15 +55,15 @@ TEST_GROUP(Reactor_TestBench)
 			delete connection[i];
 		}
 
-		Flow::Reactor::theOne().reset();
+		Flow::Reactor::reset();
 	}
 };
 
-static void producer(Flow::Component* timer, uint64_t count)
+static void producer(Timer* timer, uint64_t count)
 {
 	for (unsigned long long c = 0; c <= count; c++)
 	{
-		timer->run();
+		timer->isr();
 	}
 }
 
@@ -71,12 +71,16 @@ TEST(Reactor_TestBench, React)
 {
 	std::thread producerThread(producer, &timer, COUNT);
 
+	Flow::Reactor::start();
+
 	uint32_t finalCount = 0;
 	do
 	{
-		Flow::Reactor::theOne().run();
+		Flow::Reactor::run();
 		inCount.receive(finalCount);
 	} while(finalCount < COUNT);
 
 	producerThread.join();
+
+	Flow::Reactor::stop();
 }

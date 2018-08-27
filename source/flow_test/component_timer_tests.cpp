@@ -54,7 +54,7 @@ TEST_GROUP(Component_Timer_TestBench)
 
 		delete unitUnderTest;
 
-		Flow::Reactor::theOne().reset();
+		Flow::Reactor::reset();
 	}
 };
 
@@ -62,7 +62,7 @@ TEST(Component_Timer_TestBench, DormantWithoutStimulus)
 {
 	CHECK(!inResponse.peek());
 
-	unitUnderTest->run();
+	unitUnderTest->isr();
 
 	CHECK(!inResponse.peek());
 }
@@ -73,12 +73,12 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 
 	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
-		unitUnderTest->run();
+		unitUnderTest->isr();
 	}
 
 	CHECK(!inResponse.peek());
 
-	unitUnderTest->run();
+	unitUnderTest->isr();
 
 	Tick tick = 1;
 	CHECK(inResponse.receive(tick));
@@ -86,24 +86,24 @@ TEST(Component_Timer_TestBench, TickPeriod100)
 
 	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
-		unitUnderTest->run();
+		unitUnderTest->isr();
 	}
 
 	CHECK(!inResponse.peek());
 
-	unitUnderTest->run();
+	unitUnderTest->isr();
 
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);
 
 	for (unsigned int i = 0; i < 100 - 1; i++)
 	{
-		unitUnderTest->run();
+		unitUnderTest->isr();
 	}
 
 	CHECK(!inResponse.peek());
 
-	unitUnderTest->run();
+	unitUnderTest->isr();
 
 	CHECK(inResponse.receive(tick));
 	CHECK(tick == TICK);

@@ -21,6 +21,8 @@
  * SOLUTION.
  */
 
+#include <assert.h>
+
 #include "flow/platform.h"
 #include "flow/reactor.h"
 
@@ -32,22 +34,54 @@ Flow::Reactor& Flow::Reactor::theOne()
 
 void Flow::Reactor::add(Component& component)
 {
-	if(first == nullptr && last == nullptr)
+	if(theOne().first == nullptr && theOne().last == nullptr)
 	{
-		first = &component;
-		last = &component;
+	    theOne().first = &component;
+	    theOne().last = &component;
 	}
 	else
 	{
-		last->next = &component;
-		last = &component;
+	    theOne().last->next = &component;
+	    theOne().last = &component;
 	}
+}
+
+void Flow::Reactor::start()
+{
+    assert(!theOne().running);
+
+    Component* current = theOne().first;
+    while(current != nullptr)
+    {
+        current->start();
+
+        current = current->next;
+    }
+
+    theOne().running = true;
+}
+
+void Flow::Reactor::stop()
+{
+    assert(theOne().running);
+
+    Component* current = theOne().first;
+    while(current != nullptr)
+    {
+        current->stop();
+
+        current = current->next;
+    }
+
+    theOne().running = false;
 }
 
 void Flow::Reactor::run()
 {
+    assert(theOne().running);
+
 	bool ranSomething = false;
-	Component* current = first;
+	Component* current = theOne().first;
 	while(current != nullptr)
 	{
 		if(current->tryRun())
@@ -66,8 +100,8 @@ void Flow::Reactor::run()
 
 void Flow::Reactor::reset()
 {
-	first = nullptr;
-	last = nullptr;
+	theOne().first = nullptr;
+	theOne().last = nullptr;
 }
 
 Flow::Reactor::Reactor()

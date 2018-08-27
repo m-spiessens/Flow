@@ -248,14 +248,14 @@ typedef char Tick;
  * This component can live in interrupt context of
  * a "systick" timer as an alternative to a regular software timer.
  */
-class Timer: public Flow::Component
+class Timer
 {
 public:
 	Flow::OutPort<Tick> outTick;
 
 	explicit Timer(uint32_t period);
 
-	void run() final override;
+	void isr();
 
 private:
 	const uint_fast32_t period;

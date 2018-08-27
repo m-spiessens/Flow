@@ -37,15 +37,6 @@ class Reactor
 {
 public:
 	/**
-	 * \brief Get the singleton instance.
-	 *
-	 * Yes, a singleton is actually useful here.
-	 *
-	 * \return The singleton instance.
-	 */
-	static Reactor& theOne();
-
-	/**
 	 * \brief Add a component to the Flow::Reactor for potential running when needed.
 	 *
 	 * DO NOT call this function manually unless you know what you're doing.
@@ -53,27 +44,51 @@ public:
 	 *
 	 * \param component The component that will be taken care of.
 	 */
-	void add(Component& component);
+	static void add(Component& component);
 
 	/**
-	 * \brief Let the Flow::Reactor do its job.
-	 *
-	 * Putting this in a while(true) in the main() is a typical scenario on a microcontroller.
-	 * If the Flow::Reactor does not find any component that need to be run it will call the
-	 * Flow::Platform::waitForEvent() function.
-	 */
-	void run();
+	* \brief Let the Flow::Reactor perform second stage initialization of
+	* all Flow::Component of the application.
+	*
+	* \remark Must be called before run().
+	*/
+	static void start();
+
+	/**
+	* \brief Symmetrical deinitialization, see start().
+	*/
+	static void stop();
+
+	/**
+	* \brief Let the Flow::Reactor do its job.
+	*
+	* Putting this in a while(true) in the main() is a typical scenario on a microcontroller.
+	* If the Flow::Reactor does not find any component that need to be run it will call the
+	* Flow::Platform::waitForEvent() function.
+	*/
+	static void run();
 
 	/**
 	 * \brief Drop all registered components.
 	 */
-	void reset();
+	static void reset();
 
 private:
 	Reactor();
 
+	/**
+	* \brief Get the singleton instance.
+	*
+	* Yes, a singleton is actually useful here.
+	*
+	* \return The singleton instance.
+	*/
+	static Reactor& theOne();
+
 	Component* first = nullptr;
 	Component* last = nullptr;
+
+	bool running = false;
 };
 
 } //namespace Flow

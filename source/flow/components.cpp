@@ -28,7 +28,7 @@ Timer::Timer(uint32_t period) :
 {
 }
 
-void Timer::run()
+void Timer::isr()
 {
 	sysTicks++;
 

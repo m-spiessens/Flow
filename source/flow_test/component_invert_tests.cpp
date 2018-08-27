@@ -58,7 +58,7 @@ TEST_GROUP(Component_Invert_TestBench)
 
 		delete unitUnderTest;
 
-		Flow::Reactor::theOne().reset();
+		Flow::Reactor::reset();
 	}
 };
 

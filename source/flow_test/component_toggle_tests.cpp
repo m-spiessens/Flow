@@ -60,7 +60,7 @@ TEST_GROUP(Component_Toggle_TestBench)
 		delete unitUnderTest;
 		delete outStimulus;
 
-		Flow::Reactor::theOne().reset();
+		Flow::Reactor::reset();
 	}
 };
 

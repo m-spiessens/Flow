@@ -33,7 +33,7 @@ void Flow::disconnect(Connection* connection)
 
 Flow::Component::Component()
 {
-	Reactor::theOne().add(*this);
+	Reactor::add(*this);
 }
 
 void Flow::Component::request()
