@@ -11,3 +11,4 @@ Release
 .externalToolBuilders
 /__pycache__/
 /documentation/
+test_package/build/
