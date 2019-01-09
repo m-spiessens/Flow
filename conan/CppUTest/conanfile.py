@@ -13,6 +13,7 @@ class CppUTest(ConanFile):
 	license = "BSD-3-Clause"
 	author = "Mathias Spiessens"
 	build_policy = "missing"
+	settings = { "arch": ["x86", "x86_64", "armv7hf"] }
 	
 	def source(self):
 		download("https://github.com/cpputest/cpputest/releases/download/v3.8/cpputest-3.8.zip", "cpputest-3.8.zip")
@@ -20,9 +21,13 @@ class CppUTest(ConanFile):
 		os.unlink("cpputest-3.8.zip")
 
 	def build(self):
-		self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure; make")
+		if self.settings.arch == "armv7hf":
+			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure --host=arm-none --build=x86_64-pc-linux-gnu CXX=arm-none-eabi-g++ CXXFLAGS='-mcpu=cortex-m4 -mthumb -mlittle-endian -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections -ffreestanding' AR=arm-none-eabi-ar  --disable-extensions --prefix=$HOME/CppUTest; mv Makefile Makefile.gcc && sed 's/Gcc/armcc/g' <Makefile.gcc >Makefile; make -k; :")
+		else:
+			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure; make")
 
 	def package(self):
 		self.copy("*.h", "include/CppUTest", "cpputest-3.8/include/CppUTest")
-		self.copy("*.h", "include/CppUTestExt", "cpputest-3.8/include/CppUTestExt")
+		if self.settings.arch != "armv7hf":
+			self.copy("*.h", "include/CppUTestExt", "cpputest-3.8/include/CppUTestExt")
 		self.copy("*.a", "library", "cpputest-3.8/cpputest_build/lib")
