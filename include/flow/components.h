@@ -25,6 +25,7 @@
 #define FLOW_COMPONENTS_H_
 
 #include "flow.h"
+#include "utility.h"
 
 /**
  * \brief A component that inverts a value.
@@ -248,12 +249,12 @@ typedef char Tick;
  * This component can live in interrupt context of
  * a "systick" timer as an alternative to a regular software timer.
  */
-class Timer
+class SoftwareTimer
 {
 public:
 	Flow::OutPort<Tick> outTick;
 
-	explicit Timer(uint32_t period);
+	explicit SoftwareTimer(uint32_t period);
 
 	void isr();
 

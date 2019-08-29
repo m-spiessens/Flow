@@ -23,12 +23,12 @@
 
 #include "flow/components.h"
 
-Timer::Timer(uint32_t period) :
+SoftwareTimer::SoftwareTimer(uint32_t period) :
 		period(period)
 {
 }
 
-void Timer::isr()
+void SoftwareTimer::isr()
 {
 	sysTicks++;
 

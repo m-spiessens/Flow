@@ -1,4 +1,4 @@
-from conans import ConanFile
+from conans import ConanFile, CMake
 from conans.tools import download, unzip
 import os
 
@@ -13,7 +13,7 @@ class CppUTest(ConanFile):
 	license = "BSD-3-Clause"
 	author = "Mathias Spiessens"
 	build_policy = "missing"
-	settings = { "arch": ["x86", "x86_64", "armv7hf"] }
+	settings = { "arch": ["x86", "x86_64", "armv7hf"], "os": ["Windows", "Linux"] }
 	
 	def source(self):
 		download("https://github.com/cpputest/cpputest/releases/download/v3.8/cpputest-3.8.zip", "cpputest-3.8.zip")
@@ -23,8 +23,14 @@ class CppUTest(ConanFile):
 	def build(self):
 		if self.settings.arch == "armv7hf":
 			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure --host=arm-none --build=x86_64-pc-linux-gnu CXX=arm-none-eabi-g++ CXXFLAGS='-mcpu=cortex-m4 -mthumb -mlittle-endian -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections -ffreestanding' AR=arm-none-eabi-ar  --disable-extensions --prefix=$HOME/CppUTest; mv Makefile Makefile.gcc && sed 's/Gcc/armcc/g' <Makefile.gcc >Makefile; make -k; :")
-		else:
+		elif self.settings.os == "Linux":
 			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure; make")
+		elif self.settings.os == "Windows":
+			cmake = CMake(self)
+			cmake.configure()
+			cmake.build()
+		else:
+			raise Exception("Binary does not exist for these settings.")
 
 	def package(self):
 		self.copy("*.h", "include/CppUTest", "cpputest-3.8/include/CppUTest")

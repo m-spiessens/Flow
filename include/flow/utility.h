@@ -33,4 +33,14 @@
 
 #endif // ArraySizeOf
 
+#ifndef POW_2
+
+template<class Type>
+constexpr Type POW_2(Type exponent)
+{
+    return (Type(1) << exponent);
+}
+
+#endif
+
 #endif /* UTILITY_H_ */

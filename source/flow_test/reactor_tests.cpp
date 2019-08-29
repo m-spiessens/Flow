@@ -35,7 +35,7 @@
 TEST_GROUP(Reactor_TestBench)
 {
 	Flow::Connection* connection[2];
-	Timer timer{1};
+	SoftwareTimer timer{1};
 	Counter<Tick> counter{UINT32_MAX};
 
 #define COUNT 1000llu
@@ -59,7 +59,7 @@ TEST_GROUP(Reactor_TestBench)
 	}
 };
 
-static void producer(Timer* timer, uint64_t count)
+static void producer(SoftwareTimer* timer, uint64_t count)
 {
 	for (unsigned long long c = 0; c <= count; c++)
 	{

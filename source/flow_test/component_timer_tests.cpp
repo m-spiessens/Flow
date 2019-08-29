@@ -35,15 +35,15 @@ using Flow::OutPort;
 using Flow::InPort;
 using Flow::connect;
 
-TEST_GROUP(Component_Timer_TestBench)
+TEST_GROUP(Component_SoftwareTimer_TestBench)
 {
-	Timer* unitUnderTest;
+	SoftwareTimer* unitUnderTest;
 	Connection* inResponseConnection;
 	InPort<Tick> inResponse{&dummyComponent};
 
 	void setup()
 	{
-		unitUnderTest = new Timer(100);
+		unitUnderTest = new SoftwareTimer(100);
 
 		inResponseConnection = connect(unitUnderTest->outTick, inResponse);
 	}
@@ -58,7 +58,7 @@ TEST_GROUP(Component_Timer_TestBench)
 	}
 };
 
-TEST(Component_Timer_TestBench, DormantWithoutStimulus)
+TEST(Component_SoftwareTimer_TestBench, DormantWithoutStimulus)
 {
 	CHECK(!inResponse.peek());
 
@@ -67,7 +67,7 @@ TEST(Component_Timer_TestBench, DormantWithoutStimulus)
 	CHECK(!inResponse.peek());
 }
 
-TEST(Component_Timer_TestBench, TickPeriod100)
+TEST(Component_SoftwareTimer_TestBench, TickPeriod100)
 {
 	CHECK(!inResponse.peek());
 
