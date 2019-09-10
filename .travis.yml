@@ -24,6 +24,7 @@ install:
 - sudo apt-get install -qq build-essential eclipse-cdt
 - pip install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
+- conan remote remove conan-center
 - conan install .
 - cd ..
 
