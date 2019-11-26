@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 language: cpp
 
 matrix:
@@ -9,12 +9,12 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
+            - g++-7
             - binutils
             - python3
             - python3-pip
       env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 compiler:
 - gcc
