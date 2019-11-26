@@ -9,9 +9,6 @@ matrix:
           packages:
             - g++-7
             - binutils
-            - python3
-            - python3-setuptools
-            - python3-pip
       env:
          - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -24,7 +21,7 @@ before_install:
 install:
 - sudo add-apt-repository -y ppa:deadsnakes/ppa
 - sudo apt update
-- sudo apt install -qq build-essential eclipse-cdt python3.7
+- sudo apt install -qq build-essential eclipse-cdt python3.7 python3.7-pip
 - sudo pip3 install --upgrade pip
 - pip install --user six cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
