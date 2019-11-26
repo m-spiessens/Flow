@@ -13,7 +13,6 @@ matrix:
             - python3-pip
             - openjdk-11-jre
             - build-essential
-            - eclipse-cdt
       env:
          - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -30,15 +29,18 @@ install:
 - conan remote remove conan-center
 - conan install .
 - cd ..
+- wget -q http://ftp.halifax.rwth-aachen.de/eclipse//technology/epp/downloads/release/oxygen/3a/eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
+- tar xf eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
+- ln -s eclipse/eclipse
 
 script:
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
+- ./eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
 - ./Flow/Release/Flow
 
 after_success:
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
+- ./eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/Debug/
 - ./Flow
-- gcov-5 `find . -name *.o`
+- gcov-7 `find . -name *.o`
 - cd ../
 - coveralls -n -b Debug/ -e include/CppUTest -e include/CppUTestExt/
