@@ -11,6 +11,9 @@ matrix:
             - binutils
             - python3-setuptools
             - python3-pip
+            - openjdk-11-jre
+            - build-essential
+            - eclipse-cdt
       env:
          - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -21,8 +24,6 @@ before_install:
 - eval "${MATRIX_EVAL}"
 
 install:
-- sudo apt update
-- sudo apt install -qq build-essential eclipse-cdt
 - sudo pip3 install --upgrade pip
 - pip install --user six==1.12 cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
