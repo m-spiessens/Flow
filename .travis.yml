@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 language: cpp
 
 matrix:
@@ -6,13 +6,15 @@ matrix:
     - os: linux
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
-            - g++-5
+            - g++-7
             - binutils
+            - python3-setuptools
+            - python3-pip
+            - openjdk-11-jre
+            - build-essential
       env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 compiler:
 - gcc
@@ -21,21 +23,23 @@ before_install:
 - eval "${MATRIX_EVAL}"
 
 install:
-- sudo apt-get install -qq build-essential eclipse-cdt
-- pip install --user cpp-coveralls conan
+- sudo pip3 install --upgrade pip
+- pip install --user six==1.12 cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - conan remote remove conan-center
 - conan install .
 - cd ..
+- wget -q http://ftp.halifax.rwth-aachen.de/eclipse//technology/epp/downloads/release/oxygen/3a/eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
+- tar xf eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
 
 script:
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
+- ./eclipse/eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
 - ./Flow/Release/Flow
 
 after_success:
-- eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
+- ./eclipse/eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/Debug/
 - ./Flow
-- gcov-5 `find . -name *.o`
+- gcov-7 `find . -name *.o`
 - cd ../
 - coveralls -n -b Debug/ -e include/CppUTest -e include/CppUTestExt/
