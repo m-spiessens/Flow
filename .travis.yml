@@ -11,6 +11,8 @@ matrix:
           packages:
             - g++-5
             - binutils
+            - python3
+            - python3-pip
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
@@ -22,7 +24,7 @@ before_install:
 
 install:
 - sudo apt-get install -qq build-essential eclipse-cdt
-- pip install --user cpp-coveralls conan
+- pip3 install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - conan remote remove conan-center
 - conan install .
