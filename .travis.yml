@@ -31,14 +31,13 @@ install:
 - cd ..
 - wget -q http://ftp.halifax.rwth-aachen.de/eclipse//technology/epp/downloads/release/oxygen/3a/eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
 - tar xf eclipse-cpp-oxygen-3a-linux-gtk-x86_64.tar.gz
-- ln -s eclipse/eclipse
 
 script:
-- ./eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
+- ./eclipse/eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Release"
 - ./Flow/Release/Flow
 
 after_success:
-- ./eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
+- ./eclipse/eclipse --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data temp -import Flow -cleanBuild "Flow/Debug"
 - cd Flow/Debug/
 - ./Flow
 - gcov-7 `find . -name *.o`
