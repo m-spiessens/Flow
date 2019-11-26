@@ -24,7 +24,10 @@ before_install:
 - eval "${MATRIX_EVAL}"
 
 install:
-- sudo apt-get install -qq build-essential eclipse-cdt
+- sudo add-apt-repository ppa:deadsnakes/ppa
+- sudo apt update
+- sudo apt upgrade -qq
+- sudo apt install -qq build-essential eclipse-cdt
 - sudo pip3 install --upgrade pip
 - pip install --user six cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
