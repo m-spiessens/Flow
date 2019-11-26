@@ -12,6 +12,7 @@ matrix:
             - g++-7
             - binutils
             - python3
+            - python3-setuptools
             - python3-pip
       env:
          - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
