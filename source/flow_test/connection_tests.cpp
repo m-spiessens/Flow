@@ -30,7 +30,7 @@
 
 #include "flow_test/data.h"
 
-using Flow::ConnectionOfType;
+using Flow::ConnectionFIFO;
 using Flow::OutPort;
 using Flow::InPort;
 
@@ -38,13 +38,13 @@ using Flow::InPort;
 
 TEST_GROUP(ConnectionOfType_TestBench)
 {
-	ConnectionOfType<Data>* unitUnderTest;
+	ConnectionFIFO<Data>* unitUnderTest;
 	OutPort<Data> sender;
 	InPort<Data> receiver{&dummyComponent};
 
 	void setup()
 	{
-		unitUnderTest = new Flow::ConnectionOfType<Data>(sender,
+		unitUnderTest = new Flow::ConnectionFIFO<Data>(sender,
 				receiver, CONNECTION_FIFO_SIZE);
 	}
 
@@ -127,7 +127,7 @@ TEST(ConnectionOfType_TestBench, FullConnection)
 	CHECK(!unitUnderTest->receive(response));
 }
 
-static void producer(ConnectionOfType<Data>* _unitUnderTest,
+static void producer(ConnectionFIFO<Data>* _unitUnderTest,
 		const unsigned long long count)
 {
 	for (unsigned long long c = 0; c <= count; c++)
@@ -137,7 +137,7 @@ static void producer(ConnectionOfType<Data>* _unitUnderTest,
 	}
 }
 
-static void consumer(ConnectionOfType<Data>* _unitUnderTest,
+static void consumer(ConnectionFIFO<Data>* _unitUnderTest,
 		const unsigned long long count, bool* success)
 {
 	unsigned long long c = 0;

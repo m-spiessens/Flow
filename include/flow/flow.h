@@ -61,6 +61,42 @@ public:
 	}
 };
 
+template<typename Type>
+class ConnectionOfType :
+		public Connection
+{
+public:
+	/**
+	 * \brief Send an element over the connection.
+	 *
+	 * If the buffering capacity of the connection is full the given element is not added.
+	 *
+	 * \param element The element to be sent.
+	 * \return The element was successfully sent.
+	 */
+	virtual bool send(const Type& element) = 0;
+
+	/**
+	 * \brief Receive an element from the connection.
+	 *
+	 * \param element [output] The received element.
+	 * 		The return value indicates whether the element is valid.
+	 * \return An element was successfully received.
+	 * 		Thus the element output parameter has a valid value.
+	 */
+	virtual bool receive(Type& element) = 0;
+
+	/**
+	 * \brief Is an element available for receiving?
+	 */
+	virtual bool peek() const = 0;
+
+	/**
+	 * \brief Is the connection full?
+	 */
+	virtual bool full() const = 0;
+};
+
 /**
  * \brief A representation of a component.
  */
@@ -135,7 +171,8 @@ private:
  * \note Recommendation: use Flow::connect() instead.
  */
 template<typename Type>
-class ConnectionOfType: public Connection,
+class ConnectionFIFO :
+		public ConnectionOfType<Type>,
 		protected Queue<Type>
 {
 public:
@@ -146,7 +183,7 @@ public:
 	 * \param receiver The input port to be connected.
 	 * \param size The amount of elements the connection can buffer.
 	 */
-	ConnectionOfType(OutPort<Type>& sender, InPort<Type>& receiver,
+	ConnectionFIFO(OutPort<Type>& sender, InPort<Type>& receiver,
 			uint16_t size) :
 			Queue<Type>(size), receiver(receiver), sender(sender)
 	{
@@ -157,7 +194,7 @@ public:
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~ConnectionOfType()
+	virtual ~ConnectionFIFO()
 	{
 		sender.disconnect();
 		receiver.disconnect();
@@ -172,7 +209,7 @@ public:
 	 * \param element The element to be sent.
 	 * \return The element was successfully sent.
 	 */
-	bool send(const Type& element)
+	bool send(const Type& element) final override
 	{
 		receiver.request();
 		return this->enqueue(element);
@@ -188,7 +225,7 @@ public:
 	 * \return An element was successfully received.
 	 * 		Thus the element output parameter has a valid value.
 	 */
-	bool receive(Type& element)
+	bool receive(Type& element) final override
 	{
 		return this->dequeue(element);
 	}
@@ -196,7 +233,7 @@ public:
 	/**
 	 * \brief Is an element available for receiving?
 	 */
-	bool peek()
+	bool peek() const final override
 	{
 		return !this->isEmpty();
 	}
@@ -204,7 +241,7 @@ public:
 	/**
 	 * \brief Is the connection full?
 	 */
-	bool full()
+	bool full() const final override
 	{
 		return this->isFull();
 	}
@@ -220,17 +257,18 @@ private:
  * \note Recommendation: use Flow::connect() instead.
  */
 template<typename Type>
-class BiDirectionalConnectionOfType: public Connection
+class BiDirectionalConnectionFIFO :
+		public Connection
 {
 public:
-	BiDirectionalConnectionOfType(InOutPort<Type>& portA, InOutPort<Type>& portB,
+	BiDirectionalConnectionFIFO(InOutPort<Type>& portA, InOutPort<Type>& portB,
 			uint16_t size) :
-			connectionA(ConnectionOfType<Type>(portA, portB, size)),
-			connectionB(ConnectionOfType<Type>(portB, portA, size))
+			connectionA(ConnectionFIFO<Type>(portA, portB, size)),
+			connectionB(ConnectionFIFO<Type>(portB, portA, size))
 	{}
 
 private:
-	ConnectionOfType<Type> connectionA, connectionB;
+	ConnectionFIFO<Type> connectionA, connectionB;
 };
 
 /**
@@ -445,7 +483,7 @@ template<typename Type>
 Connection* connect(OutPort<Type>& sender, InPort<Type>& receiver,
 		uint16_t size = 1)
 {
-	return new ConnectionOfType<Type>(sender, receiver, size);
+	return new ConnectionFIFO<Type>(sender, receiver, size);
 }
 
 /**
@@ -461,7 +499,7 @@ Connection* connect(OutPort<Type>* sender, InPort<Type>& receiver,
 {
 	assert(sender != nullptr);
 
-	return new ConnectionOfType<Type>(*sender, receiver, size);
+	return new ConnectionFIFO<Type>(*sender, receiver, size);
 }
 
 /**
@@ -477,7 +515,7 @@ Connection* connect(OutPort<Type>& sender, InPort<Type>* receiver,
 {
 	assert(receiver != nullptr);
 
-	return new ConnectionOfType<Type>(sender, *receiver, size);
+	return new ConnectionFIFO<Type>(sender, *receiver, size);
 }
 
 /**
@@ -494,7 +532,7 @@ Connection* connect(OutPort<Type>* sender, InPort<Type>* receiver,
 	assert(sender != nullptr);
 	assert(receiver != nullptr);
 
-	return new ConnectionOfType<Type>(*sender, *receiver, size);
+	return new ConnectionFIFO<Type>(*sender, *receiver, size);
 }
 
 /**
@@ -508,7 +546,7 @@ template<typename Type>
 Connection* connect(InOutPort<Type>& portA, InOutPort<Type>& portB,
 		uint16_t size = 1)
 {
-	return new BiDirectionalConnectionOfType<Type>(portA, portB, size);
+	return new BiDirectionalConnectionFIFO<Type>(portA, portB, size);
 }
 
 /**
@@ -524,7 +562,7 @@ Connection* connect(InOutPort<Type>* portA, InOutPort<Type>& portB,
 {
 	assert(portA != nullptr);
 
-	return new BiDirectionalConnectionOfType<Type>(*portA, portB, size);
+	return new BiDirectionalConnectionFIFO<Type>(*portA, portB, size);
 }
 
 /**
@@ -540,7 +578,7 @@ Connection* connect(InOutPort<Type>& portA, InOutPort<Type>* portB,
 {
 	assert(portB != nullptr);
 
-	return new BiDirectionalConnectionOfType<Type>(portA, *portB, size);
+	return new BiDirectionalConnectionFIFO<Type>(portA, *portB, size);
 }
 
 /**
@@ -557,7 +595,7 @@ Connection* connect(InOutPort<Type>* portA, InOutPort<Type>* portB,
 	assert(portA != nullptr);
 	assert(portB != nullptr);
 
-	return new BiDirectionalConnectionOfType<Type>(*portA, *portB, size);
+	return new BiDirectionalConnectionFIFO<Type>(*portA, *portB, size);
 }
 
 } //namespace Flow
