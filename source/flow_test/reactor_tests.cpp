@@ -22,7 +22,7 @@
  */
 
 #include <stdint.h>
-#include <thread>
+#include <vector>
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
@@ -35,11 +35,11 @@
 
 TEST_GROUP(Reactor_TestBench)
 {
-	Flow::Connection* connection[2];
 	SoftwareTimer* timer;
-	Counter<Tick>* counter;
+	Counter<Tick>* counterA;
+	Counter<uint32_t>* counterB;
 
-#define COUNT 1000llu
+	std::vector<Flow::Connection*> connections;
 
 	Flow::InPort<uint32_t> inCount{&dummyComponent};
 
@@ -48,23 +48,30 @@ TEST_GROUP(Reactor_TestBench)
 		Flow::Reactor::reset();
 
 		timer = new SoftwareTimer{1};
-		counter = new Counter<Tick>{UINT32_MAX};
+		counterA = new Counter<Tick>{UINT32_MAX};
+		counterB = new Counter<uint32_t>{UINT32_MAX};
 
-		connection[0] = Flow::connect(timer->outTick, counter->in, COUNT);
-		connection[1] = Flow::connect(counter->out, inCount, COUNT);
+		connections =
+		{
+			Flow::connect(timer->outTick, counterA->in),
+			Flow::connect(counterA->out, counterB->in),
+			Flow::connect(counterB->out, inCount)
+		};
 	}
 
 	void teardown()
 	{
 		mock().clear();
 
-		for (unsigned int i = 0; i < ArraySizeOf(connection); i++)
+		for(Flow::Connection* connection : connections)
 		{
-			delete connection[i];
+			Flow::disconnect(connection);
 		}
+		connections.clear();
 
 		delete timer;
-		delete counter;
+		delete counterA;
+		delete counterB;
 
 		Flow::Reactor::reset();
 	}
@@ -86,7 +93,7 @@ TEST(Reactor_TestBench, React)
 		Flow::Reactor::run();
 
 		inCount.receive(finalCount);
-	} while(finalCount < COUNT);
+	} while(finalCount < 100);
 
 	mock().expectOneCall("Platform::waitForEvent()");
 	Flow::Reactor::run();

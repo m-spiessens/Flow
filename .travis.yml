@@ -42,4 +42,4 @@ after_success:
 - ./Flow
 - gcov-7 `find . -name *.o`
 - cd ../
-- coveralls -n -b Debug/ -e include/CppUTest -e include/CppUTestExt/
+- coveralls -n -b Debug/ -e include/CppUTest -e include/CppUTestExt/ -e include/flow_test/
