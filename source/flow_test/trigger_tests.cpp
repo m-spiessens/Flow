@@ -28,6 +28,8 @@
 
 #include "flow/flow.h"
 
+#include "flow_test/data.h"
+
 using Flow::Connection;
 using Flow::InTrigger;
 using Flow::OutTrigger;
@@ -36,7 +38,7 @@ using Flow::connect;
 TEST_GROUP(Trigger_TestBench)
 {
 	OutTrigger unitUnderTestOut;
-	InTrigger unitUnderTestIn{ nullptr };
+	InTrigger unitUnderTestIn{ &dummyComponent };
 	Connection* connection;
 
 	void setup()
@@ -63,6 +65,52 @@ TEST(Trigger_TestBench, SendReceiveTrigger)
 	CHECK(!unitUnderTestIn.receive());
 }
 
+TEST(Trigger_TestBench, Connect)
+{
+	CHECK(unitUnderTestOut.send());
+	CHECK(unitUnderTestIn.peek());
+	CHECK(unitUnderTestIn.receive());
+
+	disconnect(connection);
+
+	CHECK_FALSE(unitUnderTestIn.full());
+	CHECK(!unitUnderTestOut.send());
+	CHECK(!unitUnderTestIn.peek());
+	CHECK(!unitUnderTestIn.receive());
+
+	connection = connect(&unitUnderTestOut, unitUnderTestIn);
+
+	CHECK(unitUnderTestOut.send());
+	CHECK(unitUnderTestIn.peek());
+	CHECK(unitUnderTestIn.receive());
+
+	disconnect(connection);
+
+	CHECK_FALSE(unitUnderTestIn.full());
+	CHECK(!unitUnderTestOut.send());
+	CHECK(!unitUnderTestIn.peek());
+	CHECK(!unitUnderTestIn.receive());
+
+	connection = connect(unitUnderTestOut, &unitUnderTestIn);
+
+	CHECK(unitUnderTestOut.send());
+	CHECK(unitUnderTestIn.peek());
+	CHECK(unitUnderTestIn.receive());
+
+	disconnect(connection);
+
+	CHECK_FALSE(unitUnderTestIn.full());
+	CHECK(!unitUnderTestOut.send());
+	CHECK(!unitUnderTestIn.peek());
+	CHECK(!unitUnderTestIn.receive());
+
+	connection = connect(&unitUnderTestOut, &unitUnderTestIn);
+
+	CHECK(unitUnderTestOut.send());
+	CHECK(unitUnderTestIn.peek());
+	CHECK(unitUnderTestIn.receive());
+}
+
 TEST(Trigger_TestBench, SendReceiveTriggerFullEmptyWithOverflow)
 {
 	CHECK(!unitUnderTestIn.peek());
@@ -78,6 +126,8 @@ TEST(Trigger_TestBench, SendReceiveTriggerFullEmptyWithOverflow)
 	}
 
 	CHECK(!unitUnderTestOut.send());
+	CHECK(unitUnderTestIn.full());
+	CHECK(unitUnderTestOut.full());
 
 	for(int32_t i = 0; i < UINT16_MAX; i++)
 	{
