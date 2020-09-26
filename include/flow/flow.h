@@ -56,9 +56,7 @@ class Reactor;
 class Connection
 {
 public:
-	virtual ~Connection()
-	{
-	}
+	virtual ~Connection() = default;
 };
 
 template<typename Type>
@@ -105,9 +103,7 @@ class Component
 public:
 	Component();
 
-	virtual ~Component()
-	{
-	}
+	virtual ~Component() = default;
 
 	/**
 	 * \brief Request the component to be run by the Flow::Reactor.
@@ -185,10 +181,10 @@ public:
 	 */
 	ConnectionFIFO(OutPort<Type>& sender, InPort<Type>& receiver,
 			uint16_t size) :
-			Queue<Type>(size), receiver(receiver), sender(sender)
+			Queue<Type>(size), sender(sender), receiver(receiver)
 	{
-		receiver.connect(this);
 		sender.connect(this);
+		receiver.connect(this);
 	}
 
 	/**
@@ -211,8 +207,14 @@ public:
 	 */
 	bool send(const Type& element) final override
 	{
-		receiver.request();
-		return this->enqueue(element);
+		bool success = this->enqueue(element);
+
+		if(success)
+		{
+			receiver.request();
+		}
+
+		return success;
 	}
 
 	/**
@@ -247,8 +249,8 @@ public:
 	}
 
 private:
-	InPort<Type>& receiver;
 	OutPort<Type>& sender;
+	InPort<Type>& receiver;
 };
 
 /**
@@ -597,6 +599,199 @@ Connection* connect(InOutPort<Type>* portA, InOutPort<Type>* portB,
 
 	return new BiDirectionalConnectionFIFO<Type>(*portA, *portB, size);
 }
+
+class InTrigger;
+class OutTrigger;
+
+class ConnectionTrigger :
+		public Connection
+{
+public:
+	/**
+	 * \brief Create a connection between an output and input trigger.
+	 *
+	 * \param sender The output trigger to be connected.
+	 * \param receiver The input trigger to be connected.
+	 */
+	ConnectionTrigger(OutTrigger& sender, InTrigger& receiver);
+
+	/**
+	 * \brief Destructor.
+	 */
+	virtual ~ConnectionTrigger();
+
+	/**
+	 * \brief Send a trigger over the connection.
+	 *
+	 * If the buffering capacity of the connection is full the given trigger is not added.
+	 *
+	 * \return The trigger was successfully sent.
+	 */
+	bool send();
+
+	/**
+	 * \brief Receive a trigger from the connection.
+	 *
+	 * \return A trigger was successfully received.
+	 */
+	bool receive();
+
+	/**
+	 * \brief Is a trigger available for receiving?
+	 */
+	bool peek() const;
+
+	/**
+	 * \brief Is the connection full?
+	 */
+	bool full() const;
+
+private:
+	OutTrigger& sender;
+	InTrigger& receiver;
+
+	volatile uint16_t _send = 0;
+	volatile uint16_t _receive = 0;
+};
+
+class InTrigger
+{
+public:
+	/**
+	 * \brief Create an input trigger.
+	 */
+	explicit InTrigger(Component* owner);
+
+	/**
+	 * \brief Receive a trigger.
+	 *
+	 * Can be called concurrently with respect to send() of the connected output trigger.
+	 *
+	 * \return A trigger was successfully received.
+	 */
+	bool receive();
+
+	/**
+	 * \brief Is a trigger available for receiving?
+	 */
+	bool peek();
+
+	/**
+	 * \brief Associate this input trigger with a connection.
+	 *
+	 * \note Recommendation: use Flow::connect() instead.
+	 *
+	 * \param connection The connection to be associated.
+	 */
+	void connect(ConnectionTrigger* connection);
+
+	/**
+	 * \brief Dissociate this input trigger and it's connection.
+	 *
+	 * \note Recommendation: use Flow::disconnect() instead.
+	 */
+	void disconnect();
+
+	/**
+	 * \brief DO NOT USE.
+	 *
+	 * Used by the Flow::Reactor, it should not be used manually.
+	 */
+	void request();
+
+	/**
+	 * \brief Check if the connection is full.
+	 *
+	 * \return True when the connection is full.
+	 * False when the connection is not full or the trigger is not connected.
+	 */
+	bool full() const;
+
+private:
+	Component* owner = nullptr;
+	ConnectionTrigger* connection = nullptr;
+
+	/**
+	 * \brief Is this input trigger associated with a connection?
+	 */
+	bool isConnected() const;
+};
+
+/**
+ * \brief An output trigger of a component.
+ */
+class OutTrigger
+{
+public:
+	/**
+	 * \brief Send a trigger.
+	 *
+	 * Can be called concurrently with respect to receive() of the connected input trigger.
+	 * If the buffering capacity of the connection is full or the trigger is not connected
+	 * the given trigger is not added.
+	 *
+	 * \return The trigger was successfully sent.
+	 */
+	bool send();
+
+	/**
+	 * \brief Is the connection associated with this output trigger full?
+	 */
+	bool full();
+
+	/**
+	 * \brief Associate this output trigger with a connection.
+	 *
+	 * \note Recommendation: use Flow::connect() instead.
+	 *
+	 * \param connection The connection to be associated.
+	 */
+	void connect(ConnectionTrigger* connection);
+
+	/**
+	 * \brief Dissociate this output trigger and it's connection.
+	 *
+	 * \note Recommendation: use Flow::disconnect() instead.
+	 */
+	void disconnect();
+
+private:
+	ConnectionTrigger* connection = nullptr;
+
+	bool isConnected() const;
+};
+
+/**
+ * \brief Connect an output trigger to an input trigger.
+ *
+ * \param sender The output trigger to be connected.
+ * \param receiver The input trigger to be connected.
+ */
+Connection* connect(OutTrigger& sender, InTrigger& receiver);
+
+/**
+ * \brief Connect an output trigger to an input trigger.
+ *
+ * \param sender The output trigger to be connected.
+ * \param receiver The input trigger to be connected.
+ */
+Connection* connect(OutTrigger* sender, InTrigger& receiver);
+
+/**
+ * \brief Connect an output trigger to an input trigger.
+ *
+ * \param sender The output trigger to be connected.
+ * \param receiver The input trigger to be connected.
+ */
+Connection* connect(OutTrigger& sender, InTrigger* receiver);
+
+/**
+ * \brief Connect an output trigger to an input trigger.
+ *
+ * \param sender The output trigger to be connected.
+ * \param receiver The input trigger to be connected.
+ */
+Connection* connect(OutTrigger* sender, InTrigger* receiver);
 
 } //namespace Flow
 

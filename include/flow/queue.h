@@ -153,7 +153,7 @@ public:
 	{
 		int32_t delta = static_cast<int32_t>(_enqueued) - static_cast<int32_t>(_dequeued);
 
-		return static_cast<uint16_t>((delta >= 0) ? delta : delta + UINT16_MAX);
+		return static_cast<uint16_t>((delta >= 0) ? delta : delta + UINT16_MAX + 1);
 	}
 
 	/**

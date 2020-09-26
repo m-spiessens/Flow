@@ -26,22 +26,24 @@
 #include "flow/reactor.h"
 #include "flow/utility.h"
 
-void Flow::disconnect(Connection* connection)
+namespace Flow {
+
+void disconnect(Connection* connection)
 {
 	delete connection;
 }
 
-Flow::Component::Component()
+Component::Component()
 {
 	Reactor::add(*this);
 }
 
-void Flow::Component::request()
+void Component::request()
 {
 	Platform::atomic_fetch_add(&_request, 1);
 }
 
-bool Flow::Component::tryRun()
+bool Component::tryRun()
 {
 	bool ran = false;
 
@@ -55,4 +57,156 @@ bool Flow::Component::tryRun()
 	return ran;
 }
 
-//uint8_t Flow::Component::increment = 0;
+ConnectionTrigger::ConnectionTrigger(OutTrigger& sender, InTrigger& receiver) :
+	sender(sender), receiver(receiver)
+{
+	sender.connect(this);
+	receiver.connect(this);
+}
+
+ConnectionTrigger::~ConnectionTrigger()
+{
+	sender.disconnect();
+	receiver.disconnect();
+}
+
+bool ConnectionTrigger::send()
+{
+	bool available = !full();
+
+	if(available)
+	{
+		_send++;
+		receiver.request();
+	}
+
+	return available;
+}
+
+bool ConnectionTrigger::receive()
+{
+	bool available = peek();
+
+	if(available)
+	{
+		_receive++;
+	}
+
+	return available;
+}
+
+bool ConnectionTrigger::peek() const
+{
+	return _send != _receive;
+}
+
+bool ConnectionTrigger::full() const
+{
+	return _send == static_cast<uint16_t>(_receive + UINT16_MAX);
+}
+
+InTrigger::InTrigger(Component* owner) :
+		owner(owner)
+{
+}
+
+bool InTrigger::receive()
+{
+	return this->isConnected() ? this->connection->receive() : false;
+}
+
+bool InTrigger::peek()
+{
+	return this->isConnected() ? this->connection->peek() : false;
+}
+
+void InTrigger::connect(ConnectionTrigger* connection)
+{
+	assert(!isConnected());
+	this->connection = connection;
+}
+
+void InTrigger::disconnect()
+{
+	this->connection = nullptr;
+}
+
+void InTrigger::request()
+{
+	if(owner != nullptr)
+	{
+		owner->request();
+	}
+}
+
+bool InTrigger::full() const
+{
+	if(connection != nullptr)
+	{
+		return connection->full();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool InTrigger::isConnected() const
+{
+	return this->connection != nullptr;
+}
+
+bool OutTrigger::send()
+{
+	return this->isConnected() ? this->connection->send() : false;
+}
+
+bool OutTrigger::full()
+{
+	return this->isConnected() ? this->connection->full() : false;
+}
+
+void OutTrigger::connect(ConnectionTrigger* connection)
+{
+	assert(!isConnected());
+	this->connection = connection;
+}
+
+void OutTrigger::disconnect()
+{
+	this->connection = nullptr;
+}
+
+bool OutTrigger::isConnected() const
+{
+	return this->connection != nullptr;
+}
+
+Connection* connect(OutTrigger& sender, InTrigger& receiver)
+{
+	return new ConnectionTrigger(sender, receiver);
+}
+
+Connection* connect(OutTrigger* sender, InTrigger& receiver)
+{
+	assert(sender != nullptr);
+
+	return new ConnectionTrigger(*sender, receiver);
+}
+
+Connection* connect(OutTrigger& sender, InTrigger* receiver)
+{
+	assert(receiver != nullptr);
+
+	return new ConnectionTrigger(sender, *receiver);
+}
+
+Connection* connect(OutTrigger* sender, InTrigger* receiver)
+{
+	assert(sender != nullptr);
+	assert(receiver != nullptr);
+
+	return new ConnectionTrigger(*sender, *receiver);
+}
+
+} // namespace Flow

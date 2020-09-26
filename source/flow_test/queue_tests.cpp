@@ -217,3 +217,42 @@ TEST(Queue_TestBench, Threadsafe)
 		CHECK(unitUnderTest[i]->isEmpty());
 	}
 }
+
+TEST(Queue_TestBench, ElementsOverflow)
+{
+	for(int32_t i = 0; i <= UINT16_MAX; i++)
+	{
+		for(unsigned int u = 0; u < UNITS; u++)
+		{
+			CHECK(unitUnderTest[u]->isEmpty());
+			Data stimulus = Data(123, true);
+			CHECK(unitUnderTest[u]->enqueue(stimulus));
+			CHECK(!unitUnderTest[u]->isEmpty());
+			Data response = Data();
+			CHECK(unitUnderTest[u]->elements() == 1)
+			CHECK(unitUnderTest[u]->peek(response));
+			CHECK(stimulus == response);
+			response = Data();
+			CHECK(unitUnderTest[u]->dequeue(response));
+			CHECK(stimulus == response);
+			CHECK(unitUnderTest[u]->isEmpty());
+			CHECK(!unitUnderTest[u]->dequeue(response));
+		}
+	}
+
+	for(unsigned int u = 0; u < UNITS; u++)
+	{
+		CHECK(unitUnderTest[u]->isEmpty());
+	}
+
+	for(unsigned int u = 0; u < UNITS; u++)
+	{
+		Data stimulus = Data(123, true);
+		for(unsigned int j = 0; j < QUEUE_SIZE[u]; j++)
+		{
+			CHECK(unitUnderTest[u]->enqueue(stimulus));
+		}
+		CHECK_EQUAL(QUEUE_SIZE[u], unitUnderTest[u]->elements());
+		CHECK(unitUnderTest[u]->isFull());
+	}
+}
