@@ -49,6 +49,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.2061851324" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="CppUTest"/>
+									<listOptionValue builtIn="false" value="CppUTestExt"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1778847290" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-Wl,-Map=output.map -pthread" valueType="string"/>
 								<option id="gnu.cpp.link.option.debugging.codecov.722225606" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.cpp.link.option.debugging.codecov" useByScannerDiscovery="false" value="false" valueType="boolean"/>
@@ -119,6 +120,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.1171304797" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="CppUTest"/>
+									<listOptionValue builtIn="false" value="CppUTestExt"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1331758761" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-Wl,-Map=output.map -pthread" valueType="string"/>
 								<option id="gnu.cpp.link.option.debugging.codecov.799504231" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.cpp.link.option.debugging.codecov" useByScannerDiscovery="false" value="false" valueType="boolean"/>

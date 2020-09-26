@@ -25,6 +25,7 @@
 #include <thread>
 
 #include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 #include "flow/components.h"
 #include "flow/reactor.h"
@@ -35,8 +36,8 @@
 TEST_GROUP(Reactor_TestBench)
 {
 	Flow::Connection* connection[2];
-	SoftwareTimer timer{1};
-	Counter<Tick> counter{UINT32_MAX};
+	SoftwareTimer* timer;
+	Counter<Tick>* counter;
 
 #define COUNT 1000llu
 
@@ -44,43 +45,53 @@ TEST_GROUP(Reactor_TestBench)
 
 	void setup()
 	{
-		connection[0] = Flow::connect(timer.outTick, counter.in, COUNT);
-		connection[1] = Flow::connect(counter.out, inCount, COUNT);
+		Flow::Reactor::reset();
+
+		timer = new SoftwareTimer{1};
+		counter = new Counter<Tick>{UINT32_MAX};
+
+		connection[0] = Flow::connect(timer->outTick, counter->in, COUNT);
+		connection[1] = Flow::connect(counter->out, inCount, COUNT);
 	}
 
 	void teardown()
 	{
+		mock().clear();
+
 		for (unsigned int i = 0; i < ArraySizeOf(connection); i++)
 		{
 			delete connection[i];
 		}
 
+		delete timer;
+		delete counter;
+
 		Flow::Reactor::reset();
 	}
 };
 
-static void producer(SoftwareTimer* timer, uint64_t count)
-{
-	for (unsigned long long c = 0; c <= count; c++)
-	{
-		timer->isr();
-	}
-}
-
 TEST(Reactor_TestBench, React)
 {
-	std::thread producerThread(producer, &timer, COUNT);
-
 	Flow::Reactor::start();
 
 	uint32_t finalCount = 0;
 	do
 	{
+		timer->isr();
+
+		mock().expectNoCall("Platform::waitForEvent()");
 		Flow::Reactor::run();
+
+		mock().expectOneCall("Platform::waitForEvent()");
+		Flow::Reactor::run();
+
 		inCount.receive(finalCount);
 	} while(finalCount < COUNT);
 
-	producerThread.join();
+	mock().expectOneCall("Platform::waitForEvent()");
+	Flow::Reactor::run();
 
 	Flow::Reactor::stop();
+
+	mock().checkExpectations();
 }

@@ -23,14 +23,16 @@
 
 #include "flow/platform.h"
 
+#include "CppUTestExt/MockSupport.h"
+
 void Flow::Platform::configure()
 {
-	// Not needed for unit tests.
+//	mock().actualCall("Platform::configure()"); // Can't mock this, it's called too early.
 }
 
 void Flow::Platform::waitForEvent()
 {
-	// Not needed for unit tests.
+	mock().actualCall("Platform::waitForEvent()");
 }
 
 void Flow::Platform::atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment)
