@@ -39,7 +39,7 @@ TEST_GROUP(Component_SoftwareTimer_TestBench)
 {
 	SoftwareTimer* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<Tick> inResponse{&dummyComponent};
+	InPort<Tick> inResponse{ nullptr };
 
 	void setup()
 	{

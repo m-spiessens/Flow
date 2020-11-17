@@ -21,21 +21,47 @@
  * SOLUTION.
  */
 
+#include "CppUTestExt/MockSupport.h"
+
 #include "flow/platform.h"
 
-#include "CppUTestExt/MockSupport.h"
+#include "flow/reactor.h"
+
+Flow::Test::Reactor::Reactor()
+{
+	Flow::Reactor::reset();
+}
+
+void Flow::Test::Reactor::start()
+{
+	Flow::Reactor::start();
+}
+
+void Flow::Test::Reactor::run()
+{
+	stopped = false;
+
+	while(!stopped)
+	{
+		Flow::Reactor::run();
+	}
+}
+
+bool Flow::Test::Reactor::stopped = false;
+
+void Flow::Test::Reactor::stop()
+{
+	Flow::Reactor::stop();
+}
 
 void Flow::Platform::configure()
 {
-//	mock().actualCall("Platform::configure()"); // Can't mock this, it's called too early.
+	// Not needed for unit tests.
 }
 
 void Flow::Platform::waitForEvent()
 {
 	mock().actualCall("Platform::waitForEvent()");
-}
 
-void Flow::Platform::atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment)
-{
-	__atomic_fetch_add(value, increment, __ATOMIC_RELAXED);
+	Test::Reactor::stopped = true;
 }

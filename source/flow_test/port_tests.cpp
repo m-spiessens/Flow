@@ -46,7 +46,7 @@ TEST_GROUP(Port_TestBench)
 	void setup()
 	{
 		outUnitUnderTest = new OutPort<Data>;
-		inUnitUnderTest = new InPort<Data>{&dummyComponent};
+		inUnitUnderTest = new InPort<Data>{ nullptr };
 		CHECK(!inUnitUnderTest->full());
 		connection = connect(outUnitUnderTest, inUnitUnderTest,
 				CONNECTION_FIFO_SIZE);

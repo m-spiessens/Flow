@@ -40,7 +40,7 @@ TEST_GROUP(ConnectionOfType_TestBench)
 {
 	ConnectionFIFO<Data>* unitUnderTest;
 	OutPort<Data> sender;
-	InPort<Data> receiver{&dummyComponent};
+	InPort<Data> receiver{ nullptr };
 
 	void setup()
 	{

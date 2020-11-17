@@ -35,8 +35,3 @@ void Flow::Platform::waitForEvent()
 {
 	__asm("wfe");
 }
-
-void Flow::Platform::atomic_fetch_add(volatile sig_atomic_t* value, uint_fast8_t increment)
-{
-	__atomic_fetch_add(value, increment, __ATOMIC_RELAXED);
-}

@@ -43,7 +43,7 @@ TEST_GROUP(Component_Combine_TestBench)
 	Connection* outStimulusConnection[COMBINE_COUNT];
 	Combine<char, COMBINE_COUNT>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<char> inResponse{&dummyComponent};
+	InPort<char> inResponse{ nullptr };
 
 	void setup()
 	{

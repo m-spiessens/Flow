@@ -41,7 +41,7 @@ TEST_GROUP(Component_Invert_TestBench)
 	Connection* outStimulusConnection;
 	Invert<bool>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<bool> inResponse{&dummyComponent};
+	InPort<bool> inResponse{ nullptr };
 
 	void setup()
 	{

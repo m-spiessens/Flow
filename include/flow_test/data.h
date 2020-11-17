@@ -76,6 +76,4 @@ public:
 	void run() final override{}
 };
 
-extern DummyComponent dummyComponent;
-
 #endif // DATA_H_

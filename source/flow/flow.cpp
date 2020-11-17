@@ -38,23 +38,43 @@ Component::Component()
 	Reactor::add(*this);
 }
 
-void Component::request()
-{
-	Platform::atomic_fetch_add(&_request, 1);
-}
-
 bool Component::tryRun()
 {
-	bool ran = false;
+	bool doRun = false;
 
-	if(_request != _execute)
+	Peek* peekable = this->peekable;
+	while(!doRun && peekable != nullptr)
 	{
-		run();
-		_execute++;
-		ran = true;
+		doRun = peekable->peek();
+		peekable = peekable->next;
 	}
 
-	return ran;
+	if(doRun)
+	{
+		run();
+	}
+
+	return doRun;
+}
+
+Peek::Peek(Component* owner)
+{
+	if(owner != nullptr)
+	{
+		if(owner->peekable == nullptr)
+		{
+			owner->peekable = this;
+		}
+		else
+		{
+			Peek* tail = owner->peekable;
+			while(tail->next != nullptr)
+			{
+				tail = tail->next;
+			}
+			tail->next = this;
+		}
+	}
 }
 
 ConnectionTrigger::ConnectionTrigger(OutTrigger& sender, InTrigger& receiver) :
@@ -77,7 +97,6 @@ bool ConnectionTrigger::send()
 	if(available)
 	{
 		_send++;
-		receiver.request();
 	}
 
 	return available;
@@ -129,14 +148,6 @@ void InTrigger::connect(ConnectionTrigger* connection)
 void InTrigger::disconnect()
 {
 	this->connection = nullptr;
-}
-
-void InTrigger::request()
-{
-	if(owner != nullptr)
-	{
-		owner->request();
-	}
 }
 
 bool InTrigger::full() const

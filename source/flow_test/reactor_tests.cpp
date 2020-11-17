@@ -41,7 +41,7 @@ TEST_GROUP(Reactor_TestBench)
 
 	std::vector<Flow::Connection*> connections;
 
-	Flow::InPort<uint32_t> inCount{&dummyComponent};
+	Flow::InPort<uint32_t> inCount{ nullptr };
 
 	void setup()
 	{

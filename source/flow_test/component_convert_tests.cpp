@@ -41,7 +41,7 @@ TEST_GROUP(Component_Convert_TestBench)
 	Connection* outStimulusConnection;
 	Convert<float, int32_t>* unitUnderTest;
 	Connection* inResponseConnection;
-	InPort<int32_t> inResponse{&dummyComponent};
+	InPort<int32_t> inResponse{ nullptr };
 
 	void setup()
 	{

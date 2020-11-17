@@ -91,6 +91,23 @@ private:
 	bool running = false;
 };
 
+namespace Test {
+
+class Reactor
+{
+public:
+	Reactor();
+
+	void start();
+	void stop();
+
+	void run();
+
+	static bool stopped;
+};
+
+} // namespace Test
+
 } //namespace Flow
 
 #endif /* FLOW_REACTOR_H_ */

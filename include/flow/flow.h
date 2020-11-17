@@ -35,6 +35,8 @@
 namespace Flow
 {
 
+class Peek;
+
 template<typename Type>
 class InPort;
 
@@ -105,15 +107,6 @@ public:
 
 	virtual ~Component() = default;
 
-	/**
-	 * \brief Request the component to be run by the Flow::Reactor.
-	 *
-	 * This is part of the Flow::Reactor internal infrastructure.
-	 *
-	 * \remark DO NOT manually call this unless you know what you are doing.
-	 */
-	void request();
-
     /**
      * \brief Perform second stage initialization of the component.
      *
@@ -147,8 +140,7 @@ public:
     virtual void run() = 0;
 
 private:
-	volatile sig_atomic_t _request = 0;
-	volatile sig_atomic_t _execute = 0;
+    Peek* peekable = nullptr;
 	Component* next = nullptr;
 
 	/**
@@ -158,6 +150,7 @@ private:
 	 */
 	bool tryRun();
 
+	friend class Peek;
 	friend class Reactor;
 };
 
@@ -207,14 +200,7 @@ public:
 	 */
 	bool send(const Type& element) final override
 	{
-		bool success = this->enqueue(element);
-
-		if(success)
-		{
-			receiver.request();
-		}
-
-		return success;
+		return this->enqueue(element);
 	}
 
 	/**
@@ -273,18 +259,29 @@ private:
 	ConnectionFIFO<Type> connectionA, connectionB;
 };
 
+class Peek
+{
+public:
+	Peek(Component* owner);
+	virtual ~Peek() = default;
+	virtual bool peek() const = 0;
+
+	Peek* next = nullptr;
+};
+
 /**
  * \brief An input port of a component.
  */
 template<typename Type>
-class InPort
+class InPort :
+		protected Peek
 {
 public:
 	/**
 	 * \brief Create an input port.
 	 */
 	explicit InPort<Type>(Component* owner) :
-			owner(owner),
+			Peek(owner),
 			connection(nullptr)
 	{
 	}
@@ -307,7 +304,7 @@ public:
 	/**
 	 * \brief Is an element available for receiving?
 	 */
-	bool peek()
+	bool peek() const final override
 	{
 		return this->isConnected() ? this->connection->peek() : false;
 	}
@@ -336,19 +333,6 @@ public:
 	}
 
 	/**
-	 * \brief DO NOT USE.
-	 *
-	 * Used by the Flow::Reactor, it should not be used manually.
-	 */
-	void request()
-	{
-		if(owner != nullptr)
-		{
-			owner->request();
-		}
-	}
-
-	/**
 	 * \brief Check if the connection is full.
 	 *
 	 * \return True when the connection is full.
@@ -367,7 +351,6 @@ public:
 	}
 
 private:
-	Component* owner = nullptr;
 	ConnectionOfType<Type>* connection = nullptr;
 
 	/**
@@ -691,13 +674,6 @@ public:
 	 * \note Recommendation: use Flow::disconnect() instead.
 	 */
 	void disconnect();
-
-	/**
-	 * \brief DO NOT USE.
-	 *
-	 * Used by the Flow::Reactor, it should not be used manually.
-	 */
-	void request();
 
 	/**
 	 * \brief Check if the connection is full.

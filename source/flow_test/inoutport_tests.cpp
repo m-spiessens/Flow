@@ -38,15 +38,15 @@ const static unsigned int CONNECTION_FIFO_SIZE = 10;
 
 TEST_GROUP(InOutPort_TestBench)
 {
-	InOutPort<Data> unitUnderTestA{&dummyComponent};
-	InOutPort<Data> unitUnderTestB{&dummyComponent};
+	InOutPort<Data> unitUnderTestA{ nullptr };
+	InOutPort<Data> unitUnderTestB{ nullptr };
 	Connection* connectionAB;
 
 	InOutPort<Data>* unitUnderTestC;
-	InOutPort<Data> unitUnderTestD{&dummyComponent};
+	InOutPort<Data> unitUnderTestD{ nullptr };
 	Connection* connectionCD;
 
-	InOutPort<Data> unitUnderTestE{&dummyComponent};
+	InOutPort<Data> unitUnderTestE{ nullptr };
 	InOutPort<Data>* unitUnderTestF;
 	Connection* connectionEF;
 
@@ -56,10 +56,10 @@ TEST_GROUP(InOutPort_TestBench)
 
 	void setup()
 	{
-		unitUnderTestC = new InOutPort<Data>{&dummyComponent};
-		unitUnderTestF = new InOutPort<Data>{&dummyComponent};
-		unitUnderTestG = new InOutPort<Data>{&dummyComponent};
-		unitUnderTestH = new InOutPort<Data>{&dummyComponent};
+		unitUnderTestC = new InOutPort<Data>{ nullptr };
+		unitUnderTestF = new InOutPort<Data>{ nullptr };
+		unitUnderTestG = new InOutPort<Data>{ nullptr };
+		unitUnderTestH = new InOutPort<Data>{ nullptr };
 
 		connectionAB = connect(unitUnderTestA, unitUnderTestB,
 				CONNECTION_FIFO_SIZE);

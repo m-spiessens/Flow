@@ -38,7 +38,7 @@ using Flow::connect;
 TEST_GROUP(Trigger_TestBench)
 {
 	OutTrigger unitUnderTestOut;
-	InTrigger unitUnderTestIn{ &dummyComponent };
+	InTrigger unitUnderTestIn{  nullptr  };
 	Connection* connection;
 
 	void setup()
