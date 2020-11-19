@@ -1,6 +1,6 @@
 # Flow {#mainpage}
 
-[![Build Status](https://travis-ci.org/CynaraKrewe/Flow.svg?branch=master)](https://travis-ci.org/CynaraKrewe/Flow)
+[![Build Status](https://travis-ci.com/CynaraKrewe/Flow.svg?branch=master](https://travis-ci.org/CynaraKrewe/Flow)
 [![Coverage Status](https://coveralls.io/repos/github/CynaraKrewe/Flow/badge.svg)](https://coveralls.io/github/CynaraKrewe/Flow)
 
 [We have conan packages!](https://bintray.com/cynarakrewe/CynaraConan)
