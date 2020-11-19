@@ -7,15 +7,8 @@ matrix:
       addons:
         apt:
           packages:
-            - g++-7
-            - binutils
-            - python3-setuptools
-            - python3-pip
-            - openjdk-11-jre
-            - build-essential
+            - g++
             - cmake
-      env:
-         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 compiler:
 - gcc
