@@ -28,9 +28,10 @@ class CppUTest(ConanFile):
 	def package(self):
 		self.copy("*.h", "include/CppUTest", "cpputest-3.8/include/CppUTest")
 		self.copy("*.h", "include/CppUTestExt", "cpputest-3.8/include/CppUTestExt")
-		self.copy("*.a", "library", "cpputest-3.8/cpputest_build/lib")
+		self.copy("libCppUTest.a", "library", "./src/CppUTest/")
+		self.copy("libCppUTestExt.a", "library", "./src/CppUTestExt/")
 
 	def package_info(self):
-		self.cpp_info.includedirs = ["include/CppUTest", "include/CppUTestExt"]
+		self.cpp_info.includedirs = ["include"]
 		self.cpp_info.libs = ["CppUTest", "CppUTestExt"]
 		self.cpp_info.libdirs = ["library"]
