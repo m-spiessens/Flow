@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "FlowTest",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/test_package/build/Debug/bin/FlowTest",
+        "args": [],
+        "stopAtEntry": true,
+        "cwd": "${workspaceFolder}/test_package",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "Build FlowTest Debug",
+        "miDebuggerPath": "/usr/bin/gdb"
+      }
+    ]
+}

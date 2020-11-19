@@ -13,7 +13,7 @@ class CppUTest(ConanFile):
 	license = "BSD-3-Clause"
 	author = "Mathias Spiessens"
 	build_policy = "missing"
-	settings = { "arch": ["x86", "x86_64", "armv7hf"], "os": ["Windows", "Linux"] }
+	settings = { "arch": ["x86", "x86_64"] }
 	
 	def source(self):
 		download("https://github.com/cpputest/cpputest/releases/download/v3.8/cpputest-3.8.zip", "cpputest-3.8.zip")
@@ -21,19 +21,16 @@ class CppUTest(ConanFile):
 		os.unlink("cpputest-3.8.zip")
 
 	def build(self):
-		if self.settings.arch == "armv7hf":
-			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure --host=arm-none --build=x86_64-pc-linux-gnu CXX=arm-none-eabi-g++ CXXFLAGS='-mcpu=cortex-m4 -mthumb -mlittle-endian -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections -ffreestanding' AR=arm-none-eabi-ar  --disable-extensions --prefix=$HOME/CppUTest; mv Makefile Makefile.gcc && sed 's/Gcc/armcc/g' <Makefile.gcc >Makefile; make -k; :")
-		elif self.settings.os == "Linux":
-			self.run("cd cpputest-3.8/cpputest_build; autoreconf .. -i; ../configure; make")
-		elif self.settings.os == "Windows":
-			cmake = CMake(self)
-			cmake.configure()
-			cmake.build()
-		else:
-			raise Exception("Binary does not exist for these settings.")
+		cmake = CMake(self)
+		cmake.configure(source_folder="cpputest-3.8/")
+		cmake.build()
 
 	def package(self):
 		self.copy("*.h", "include/CppUTest", "cpputest-3.8/include/CppUTest")
-		if self.settings.arch != "armv7hf":
-			self.copy("*.h", "include/CppUTestExt", "cpputest-3.8/include/CppUTestExt")
+		self.copy("*.h", "include/CppUTestExt", "cpputest-3.8/include/CppUTestExt")
 		self.copy("*.a", "library", "cpputest-3.8/cpputest_build/lib")
+
+	def package_info(self):
+		self.cpp_info.includedirs = ["include/CppUTest", "include/CppUTestExt"]
+		self.cpp_info.libs = ["CppUTest", "CppUTestExt"]
+		self.cpp_info.libdirs = ["library"]

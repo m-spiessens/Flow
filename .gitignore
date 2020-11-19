@@ -12,3 +12,8 @@ Release
 /__pycache__/
 /documentation/
 test_package/build/
+build/
+CMakeCache.txt
+CMakeFiles/
+conan.lock
+graph_info.json
