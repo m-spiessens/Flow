@@ -7,7 +7,6 @@ matrix:
       addons:
         apt:
           packages:
-            - g++
             - cmake
 
 compiler:
@@ -18,7 +17,7 @@ before_install:
 
 install:
 - sudo pip3 install --upgrade pip
-- pip install --user six==1.12 cpp-coveralls conan
+- pip install --user cpp-coveralls conan
 - conan remote add CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan
 - conan remote remove conan-center
 
