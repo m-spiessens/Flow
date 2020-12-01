@@ -24,6 +24,7 @@ class Flow(ConanFile):
 		elif self.settings.arch == "armv7hf":
 			cmake.definitions["CMAKE_CXX_FLAGS_INIT"] = "-march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-exceptions"
 		cmake.configure()
+		cmake.build()
 
 	def package(self):
 		self.copy("*.h", "include/flow/", "include/flow/")

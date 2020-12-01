@@ -10,10 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_compile_options(-Wall -Wextra -pedantic)
 
-if(COVERAGE STREQUAL "YES")
-    add_compile_options(-fprofile-arcs -ftest-coverage)
-endif()
-
 add_library(Flow "")
 target_include_directories(Flow PUBLIC 
     "${PROJECT_BINARY_DIR}"
