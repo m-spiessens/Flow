@@ -1,0 +1,1 @@
+CynaraKrewe https://api.bintray.com/conan/cynarakrewe/CynaraConan True 
