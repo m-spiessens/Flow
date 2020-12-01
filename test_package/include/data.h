@@ -26,7 +26,7 @@
 
 #include <stdint.h>
 
-#include "flow.h"
+#include "flow/flow.h"
 
 class Data
 {

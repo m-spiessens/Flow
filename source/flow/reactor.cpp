@@ -23,8 +23,8 @@
 
 #include <assert.h>
 
-#include "platform.h"
-#include "reactor.h"
+#include "flow/platform.h"
+#include "flow/reactor.h"
 
 Flow::Reactor& Flow::Reactor::theOne()
 {

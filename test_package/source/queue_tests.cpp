@@ -26,7 +26,7 @@
 
 #include "CppUTest/TestHarness.h"
 
-#include "queue.h"
+#include "flow/queue.h"
 
 #include "data.h"
 

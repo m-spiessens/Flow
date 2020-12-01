@@ -23,7 +23,7 @@
 
 #include "CppUTest/CommandLineTestRunner.h"
 
-#include "utility.h"
+#include "flow/utility.h"
 
 #include "data.h"
 

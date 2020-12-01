@@ -26,7 +26,7 @@
 
 #include "CppUTest/TestHarness.h"
 
-#include "flow.h"
+#include "flow/flow.h"
 
 #include "data.h"
 

@@ -4,59 +4,59 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Install Flow",
+            "label": "Install",
             "type": "shell",
             "command": "conan install . -if build/ -s build_type=Release"
         },
         {
-            "label": "Build Flow",
+            "label": "Build",
             "type": "shell",
             "command": "conan build . -bf build/",
             "group": "build",
             "dependsOn": [
-                "Install Flow"
+                "Install"
             ],
             "problemMatcher": [
                 "$gcc"
             ]
         },
         {
-            "label": "Export Flow",
+            "label": "Export",
             "type": "shell",
             "command": "conan export . spiessensm/testing",
             "dependsOn": [
-                "Build Flow"
+                "Build"
             ]
         },
         {
-            "label": "Install FlowTest Debug",
+            "label": "Test Install",
             "type": "shell",
-            "command": "conan install . -if build/Debug/ -s build_type=Debug",
+            "command": "conan install . -if build/Coverage/ -s build_type=Debug --build Flow/2.0@spiessensm/testing",
             "dependsOn": [
-                "Export Flow"
+                "Export"
             ],
             "options": {
                 "cwd": "test_package/"
             }
         },
         {
-            "label": "Build FlowTest Debug",
+            "label": "Test Build",
             "type": "shell",
-            "command": "conan build . -bf build/Debug/",
+            "command": "conan build . -bf build/Coverage/",
             "dependsOn": [
-                "Install FlowTest Debug"
+                "Test Install"
             ],
             "options": {
                 "cwd": "test_package/"
             }
         },
         {
-            "label": "Run FlowTest",
+            "label": "Test",
             "type": "shell",
-            "command": "conan test test_package Flow/2.0@spiessensm/testing -s build_type=Release",
+            "command": "conan test test_package Flow/2.0@spiessensm/testing -s build_type=Release --build Flow/2.0@spiessensm/testing",
             "group": "test",
             "dependsOn": [
-                "Export Flow"
+                "Export"
             ]
         }
     ]

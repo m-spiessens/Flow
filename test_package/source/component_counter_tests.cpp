@@ -25,8 +25,8 @@
 
 #include "CppUTest/TestHarness.h"
 
-#include "components.h"
-#include "reactor.h"
+#include "flow/components.h"
+#include "flow/reactor.h"
 
 #include "data.h"
 

@@ -12,9 +12,6 @@ matrix:
 compiler:
 - gcc
 
-before_install:
-- eval "${MATRIX_EVAL}"
-
 install:
 - sudo pip3 install --upgrade pip
 - pip install --user cpp-coveralls conan
@@ -26,13 +23,13 @@ script:
 - conan build . -bf build/
 - conan export . spiessensm/testing
 - conan test test_package Flow/2.0@spiessensm/testing -s build_type=Release
-- conan install test_package -if test_package/build/ -s build_type=Debug
-- conan build test_package -bf test_package/build/
-- ./test_package/build/bin/FlowTest
+- conan install test_package -if test_package/build/coverage -s build_type=Debug
+- conan build test_package -bf test_package/build/coverage
+- ./test_package/build/coverage/bin/FlowTest
 
 after_success:
-- gcov `find build/Debug/ -name *.o`
-- coveralls -b build/Debug/ -e include/data.h
+- gcov `find test_package/build/coverage/ -name *.o`
+- coveralls -b test_package/build/coverage/ -e include/data.h
 
 before_deploy:
 - conan install . -if build/ -s build_type=Release

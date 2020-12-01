@@ -21,10 +21,10 @@
  * SOLUTION.
  */
 
-#include "flow.h"
-#include "platform.h"
-#include "reactor.h"
-#include "utility.h"
+#include "flow/flow.h"
+#include "flow/platform.h"
+#include "flow/reactor.h"
+#include "flow/utility.h"
 
 namespace Flow {
 

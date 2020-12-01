@@ -26,8 +26,8 @@
 
 #include "CppUTest/TestHarness.h"
 
-#include "pool.h"
-#include "utility.h"
+#include "flow/pool.h"
+#include "flow/utility.h"
 
 #include "data.h"
 

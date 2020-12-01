@@ -21,17 +21,46 @@
  * SOLUTION.
  */
 
-#include "platform.h"
+#include "CppUTestExt/MockSupport.h"
 
-#define SCR *(uint32_t*)0xE000ED10
-#define SEVONPEND (1 << 4)
+#include "flow/platform.h"
+#include "flow/reactor.h"
+
+Flow::Test::Reactor::Reactor()
+{
+	Flow::Reactor::reset();
+}
+
+void Flow::Test::Reactor::start()
+{
+	Flow::Reactor::start();
+}
+
+void Flow::Test::Reactor::run()
+{
+	stopped = false;
+
+	while(!stopped)
+	{
+		Flow::Reactor::run();
+	}
+}
+
+bool Flow::Test::Reactor::stopped = false;
+
+void Flow::Test::Reactor::stop()
+{
+	Flow::Reactor::stop();
+}
 
 void Flow::Platform::configure()
 {
-	SCR |= SEVONPEND;
+	// Not needed for unit tests.
 }
 
 void Flow::Platform::waitForEvent()
 {
-	__asm("wfe");
+	mock().actualCall("Platform::waitForEvent()");
+
+	Test::Reactor::stopped = true;
 }

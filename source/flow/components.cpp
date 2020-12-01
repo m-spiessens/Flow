@@ -21,7 +21,7 @@
  * SOLUTION.
  */
 
-#include "components.h"
+#include "flow/components.h"
 
 SoftwareTimer::SoftwareTimer(uint32_t period) :
 		period(period)

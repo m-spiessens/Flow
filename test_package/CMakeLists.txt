@@ -8,8 +8,11 @@ conan_basic_setup(TARGETS)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+add_compile_options(-Wall -Wextra -pedantic)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-Wall -Wextra -pedantic -fprofile-arcs -ftest-coverage)
+    add_compile_options(-fprofile-arcs -ftest-coverage)
+    add_link_options(-fprofile-arcs -ftest-coverage -lgcov)
 endif()
 
 add_executable(FlowTest "")
@@ -38,7 +41,7 @@ target_sources(FlowTest
         source/connection_tests.cpp
         source/port_tests.cpp
         source/testreactor_tests.cpp
-        ${PROJECT_BINARY_DIR}/flow/source/platform_cpputest.cpp
+        ${PROJECT_BINARY_DIR}/source/flow/platform_cpputest.cpp
 )
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)

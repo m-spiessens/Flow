@@ -21,7 +21,7 @@
  * SOLUTION.
  */
 
-#include "components.h"
-#include "flow.h"
-#include "pool.h"
-#include "utility.h"
+#include "flow/components.h"
+#include "flow/flow.h"
+#include "flow/pool.h"
+#include "flow/utility.h"
