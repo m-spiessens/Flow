@@ -28,7 +28,7 @@ script:
 - ./test_package/build/coverage/bin/FlowCoverage
 
 after_success:
-- lcov --capture -d test_package/build/coverage/ --output-file coverage.info --include "*Flow/*" --exclude "*coverage*" --exclude "*/data.h"
+- lcov --capture -d test_package/build/coverage/ -b test_package/build/coverage/ --convert-filenames --output-file coverage.info --include "*Flow/*" --exclude "*coverage*" --exclude "*/data.h"
 - coveralls -n -l coverage.info
 
 before_deploy:
