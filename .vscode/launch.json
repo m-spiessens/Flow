@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "FlowTest",
+        "name": "FlowCoverage",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}/test_package/build/coverage/bin/FlowTest",
+        "program": "${workspaceFolder}/test_package/build/coverage/bin/FlowCoverage",
         "args": [],
         "stopAtEntry": true,
         "cwd": "${workspaceFolder}/test_package",

@@ -27,7 +27,7 @@ script:
 - ./test_package/build/coverage/bin/FlowCoverage
 
 after_success:
-- coveralls -b test_package/build/coverage/ -i test_package/build/coverage/include/flow/ -i test_package/build/coverage/source/flow/ -i test_package/source
+- coveralls -b test_package/build/coverage/ -i include/flow/ -i source/flow/ -i test_package/source
 
 before_deploy:
 - conan install . -if build/ -s build_type=Release

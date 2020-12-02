@@ -65,7 +65,7 @@ PRIVATE
 
 target_include_directories(FlowCoverage
 PRIVATE
-    "${PROJECT_BINARY_DIR}/include"
+    "${PROJECT_SOURCE_DIR}/../include"
     "${PROJECT_SOURCE_DIR}/include"
 )
 
@@ -88,10 +88,10 @@ PRIVATE
     source/connection_tests.cpp
     source/port_tests.cpp
     source/testreactor_tests.cpp
-    ${PROJECT_BINARY_DIR}/source/flow/platform_cpputest.cpp
-    ${PROJECT_BINARY_DIR}/source/flow/components.cpp
-    ${PROJECT_BINARY_DIR}/source/flow/flow.cpp
-    ${PROJECT_BINARY_DIR}/source/flow/reactor.cpp
+    ../source/flow/platform_cpputest.cpp
+    ../source/flow/components.cpp
+    ../source/flow/flow.cpp
+    ../source/flow/reactor.cpp
 )
 
 target_link_libraries(FlowCoverage 

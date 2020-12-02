@@ -11,13 +11,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-Wall -Wextra -pedantic)
 
 add_library(Flow "")
-target_include_directories(Flow PUBLIC 
+target_include_directories(Flow
+PUBLIC 
     "${PROJECT_BINARY_DIR}"
-    "${PROJECT_SOURCE_DIR}/include")
+    "${PROJECT_SOURCE_DIR}/include"
+)
 
 target_sources(Flow
-    PRIVATE
-        source/flow/components.cpp
-        source/flow/flow.cpp
-        source/flow/reactor.cpp
+PRIVATE
+    source/flow/components.cpp
+    source/flow/flow.cpp
+    source/flow/reactor.cpp
 )
