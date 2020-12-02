@@ -8,6 +8,7 @@ matrix:
         apt:
           packages:
             - cmake
+            - lcov
 
 compiler:
 - gcc
