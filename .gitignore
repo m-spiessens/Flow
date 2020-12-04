@@ -13,6 +13,7 @@ Release
 /documentation/
 test_package/build/
 build/
+coverage/
 CMakeCache.txt
 CMakeFiles/
 conan.lock

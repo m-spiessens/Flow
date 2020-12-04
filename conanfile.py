@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake
+import os
 
 class Flow(ConanFile):
 	name = "Flow"
@@ -10,28 +11,45 @@ class Flow(ConanFile):
 	author = "Mathias Spiessens"
 	build_policy = "missing"
 	settings = { "arch": ["x86", "x86_64", "armv6", "armv7", "armv7hf"], "os": ["none", "Linux"], "build_type": ["Release", "Debug"], "compiler": ["gcc"] }
+	options = { "coverage": [True, False] }
+	default_options = { "coverage": False }
 	generators = "cmake"
 	exports_sources = "include/*", "source/*", "CMakeLists.txt"
 
+	def requirements(self):
+		if self.options.coverage:
+			self.requires("CppUTest/3.8@spiessensm/stable")
+
 	def build(self):
 		cmake = CMake(self)
+
 		if self.settings.os == "none":
 			cmake.definitions["CMAKE_TRY_COMPILE_TARGET_TYPE"] = "STATIC_LIBRARY"
+
 		if self.settings.arch == "armv6":
 			cmake.definitions["CMAKE_CXX_FLAGS_INIT"] = "-march=armv6-m -mthumb -fno-exceptions"
 		elif self.settings.arch == "armv7":
 			cmake.definitions["CMAKE_CXX_FLAGS_INIT"] = "-march=armv7e-m -mthumb -fno-exceptions"
 		elif self.settings.arch == "armv7hf":
 			cmake.definitions["CMAKE_CXX_FLAGS_INIT"] = "-march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-exceptions"
+
 		cmake.configure()
-		cmake.build()
+		cmake.build(target="Flow")
+
+		if self.options.coverage:
+			cmake.test(target="FlowCoverage")
+			test = os.path.join(self.build_folder, "bin", "FlowCoverage")
+			self.run(test)
 
 	def package(self):
 		self.copy("*.h", "include/flow/", "include/flow/")
 		self.copy("libFlow.a", "library/", "lib/")
-		self.copy("components.cpp", "source/flow/", "source/flow/")
-		self.copy("flow.cpp", "source/flow/", "source/flow/")
-		self.copy("reactor.cpp", "source/flow/", "source/flow/")
+
+		if(self.settings.build_type == "Debug"):
+			self.copy("components.cpp", "source/flow/", "source/flow/")
+			self.copy("flow.cpp", "source/flow/", "source/flow/")
+			self.copy("reactor.cpp", "source/flow/", "source/flow/")
+
 		if self.settings.arch == "x86" or self.info.settings.arch == "x86_64":
 			self.copy("platform_cpputest.cpp", "source/flow/", "source/flow/")
 		elif self.settings.arch == "armv6" or self.settings.arch == "armv7" or self.settings.arch == "armv7hf":
