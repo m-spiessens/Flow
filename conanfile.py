@@ -1,5 +1,4 @@
 from conans import ConanFile, CMake
-import os
 
 class Flow(ConanFile):
 	name = "Flow"
@@ -11,14 +10,8 @@ class Flow(ConanFile):
 	author = "Mathias Spiessens"
 	build_policy = "missing"
 	settings = { "arch": ["x86", "x86_64", "armv6", "armv7", "armv7hf"], "os": ["none", "Linux"], "build_type": ["Release", "Debug"], "compiler": ["gcc"] }
-	options = { "coverage": [True, False] }
-	default_options = { "coverage": False }
 	generators = "cmake"
 	exports_sources = "include/*", "source/*", "CMakeLists.txt"
-
-	def requirements(self):
-		if self.options.coverage:
-			self.requires("CppUTest/3.8@spiessensm/stable")
 
 	def build(self):
 		cmake = CMake(self)
@@ -34,12 +27,7 @@ class Flow(ConanFile):
 			cmake.definitions["CMAKE_CXX_FLAGS_INIT"] = "-march=armv7e-m -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fno-exceptions"
 
 		cmake.configure()
-		cmake.build(target="Flow")
-
-		if self.options.coverage:
-			cmake.test(target="FlowCoverage")
-			test = os.path.join(self.build_folder, "bin", "FlowCoverage")
-			self.run(test)
+		cmake.build()
 
 	def package(self):
 		self.copy("*.h", "include/flow/", "include/flow/")

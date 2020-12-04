@@ -1,24 +1,26 @@
 from conans import ConanFile, CMake
+import os
 
 class FlowTest(ConanFile):
       requires = "CppUTest/3.8@spiessensm/stable", "Flow/2.0@spiessensm/testing"
       settings = "os", "compiler", "build_type", "arch"
+      options = { "coverage": [True, False] }
+      default_options = { "coverage": False }
       generators = "cmake"
 
       def imports(self):
-            self.copy("*.h")
-            self.copy("*.cpp")
+            self.copy("*.cpp", "source/flow/", "source/flow/")
 
       def build(self):
             cmake = CMake(self)
             cmake.configure()
-            if(self.settings.build_type == "Release"):
-                  cmake.build(target="FlowTest")
-            elif(self.settings.build_type == "Debug"):
-                  cmake.build(target="FlowCoverage")
+            cmake.build(target="FlowTest")
+
+            if self.options.coverage:
+                  cmake.test(target="FlowCoverage")
+                  test = os.path.join(self.build_folder, "bin", "FlowCoverage")
+                  self.run(test)
 
       def test(self):
-            if(self.settings.build_type == "Release"):
-                  self.run('./bin/FlowTest')
-            elif(self.settings.build_type == "Debug"):
-                  self.run('./bin/FlowCoverage')
+            test = os.path.join(self.build_folder, "bin", "FlowTest")
+            self.run(test)
