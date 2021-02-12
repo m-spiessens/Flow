@@ -1,6 +1,6 @@
 # MIGRATION NOTICE
 
-[2020-02-12 Flow moved to GitLab!](https://gitlab.com/m-spiessens/Flow)
+[2021-02-12 Flow moved to GitLab!](https://gitlab.com/m-spiessens/Flow)
 
 # Flow {#mainpage}
 
